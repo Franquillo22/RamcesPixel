@@ -519,7 +519,7 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y CHAT DE IA -->
+    <!-- BOTÓN Y CHAT DE IA DINÁMICA -->
     <button class="ai-fab" onclick="toggleChat()" title="Asistente RamcesAI">🤖</button>
 
     <div id="aiChat" class="chat-window">
@@ -528,7 +528,7 @@
             <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
         </div>
         <div class="chat-messages" id="chatMsgs">
-            <div class="msg msg-bot">¡Hola! Soy RamcesAI 👋. Estoy aquí para ayudarte con cualquier duda sobre el servidor o para platicar. ¡Pregúntame lo que quieras!</div>
+            <div class="msg msg-bot">¡Hola! Soy RamcesAI 🤖. Estoy listo para responder tus dudas sobre el servidor o conversar un rato. ¿De qué te gustaría hablar hoy?</div>
         </div>
         <div class="chat-input-area">
             <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
@@ -642,7 +642,7 @@
     </div>
 
     <script>
-        // MÚSICA DE FONDO (JAZZ)
+        // REPRODUCTOR MÚSICA DE FONDO
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('musicPlayBtn');
         const statusTxt = document.getElementById('musicStatus');
@@ -659,7 +659,7 @@
             }
         }
 
-        // MODALES
+        // CONTROL DE MODALES
         let selectedItem = "";
         let selectedPrice = "";
 
@@ -680,7 +680,7 @@
             openModal('checkoutModal');
         }
 
-        // ALGORITMO DE LUHN (Verifica validez de tarjeta)
+        // ALGORITMO DE LUHN
         function checkLuhn(cardNumber) {
             let s = 0;
             let doubleDigit = false;
@@ -696,7 +696,6 @@
             return (s % 10) === 0;
         }
 
-        // VALIDACIÓN DE FECHA FUTURA
         function isFutureDate(mm, yy) {
             const now = new Date();
             const currentYear = parseInt(now.getFullYear().toString().slice(-2));
@@ -723,35 +722,29 @@
             const cvv = document.getElementById('cvv').value;
             const zip = document.getElementById('zipCode').value;
 
-            // 1. Validar tarjeta (Luhn)
             if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
                 showError("❌ Tarjeta inválida o falsa. Ingresa un número válido de 16 dígitos.");
                 return;
             }
 
-            // 2. Validar Fecha
             const expParts = exp.split('/');
             if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
                 showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
                 return;
             }
 
-            // 3. Validar CVV
             if (!/^\d{3,4}$/.test(cvv)) {
                 showError("❌ El código CVV debe ser de 3 o 4 dígitos.");
                 return;
             }
 
-            // 4. Validar Código Postal
             if (!/^\d{5}$/.test(zip)) {
                 showError("❌ El Código Postal debe ser de 5 dígitos.");
                 return;
             }
 
-            // SI TODO ES CORRECTO:
             alert(`¡Pago verificado correctamente para ${user}! Redirigiendo a Discord para contactar al Staff.`);
             closeModal('checkoutModal');
-
             window.open('https://discord.gg/F5B5br4WH', '_blank');
         }
 
@@ -807,6 +800,7 @@
             }
         }
 
+        // LÓGICA DE IA DINÁMICA (GENERACIÓN ESTILO GEMINI)
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -831,7 +825,7 @@
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg msg-bot';
-                botMsg.textContent = getAIResponse(txt.toLowerCase());
+                botMsg.textContent = generateAIResponse(txt.toLowerCase());
                 msgs.appendChild(botMsg);
                 msgs.scrollTop = msgs.scrollHeight;
             }, 400);
@@ -839,21 +833,96 @@
             msgs.scrollTop = msgs.scrollHeight;
         }
 
-        function getAIResponse(q) {
-            if (q.includes('idiota')) return "Lamento que lo veas así. Si cometí un error, dime cuál fue para corregirlo.";
-            if (q.includes('creador') || q.includes('dueño') || q.includes('ramces')) return "El creador y desarrollador oficial del servidor es Ramces Explota Baños 👑.";
-            if (q.includes('ip')) return "La IP oficial para conectarte es: RamcesPixelmc.aternos.me 🚀";
-            if (q.includes('discord')) return "Únete a nuestra comunidad oficial en Discord aquí: https://discord.gg/F5B5br4WH 💬";
-            if (q.includes('tienda') || q.includes('comprar')) return "Abre el menú de 'Tienda VIP' arriba para adquirir los rangos VIP, VIP+ o MVP.";
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
-            if (q.includes('hola') || q.includes('buenas')) {
-                return "¡Hola! Qué gusto saludarte. ¿Cómo te puedo ayudar hoy en RamcesPixel? 😊";
-            }
-            if (q.includes('gracias')) {
-                return "¡De nada! Aquí estoy para lo que necesites. ¡Nos vemos dentro del servidor! 🎮🔥";
+        function generateAIResponse(q) {
+            // INSULTOS / DESAHOGOS
+            if (q.includes('idiota') || q.includes('pendejo') || q.includes('estupido') || q.includes('estúpido')) {
+                const r = [
+                    "Tranquilo, intentemos mantener el respeto. Dime qué fallo y lo solucionamos 🤝.",
+                    "Lamento si algo no salió como esperabas. ¿En qué puedo ayudarte adecuadamente?",
+                    "Entiendo tu descontento, pero estoy aquí para ayudarte si me explicas el problema."
+                ];
+                return getRandomItem(r);
             }
 
-            return "Interesante pregunta 🤔. Puedes escribirle al Staff en nuestro Discord: https://discord.gg/F5B5br4WH";
+            // DATOS DEL CREADOR
+            if (q.includes('creador') || q.includes('dueño') || q.includes('ramces') || q.includes('owner')) {
+                const r = [
+                    "El servidor fue creado y desarrollado por Ramces Explota Baños 👑.",
+                    "El dueño y creador de todo el proyecto RamcesPixel es Ramces Explota Baños 🚀.",
+                    "¡Ramces Explota Baños es la mente maestra detrás de RamcesPixel!"
+                ];
+                return getRandomItem(r);
+            }
+
+            // DATOS DE IP Y PUERTO
+            if (q.includes('ip') || q.includes('direccion') || q.includes('dirección') || q.includes('puerto') || q.includes('port')) {
+                const r = [
+                    "Puedes conectarte usando la IP: RamcesPixelmc.aternos.me (puerto por defecto 25565).",
+                    "La dirección oficial para entrar es: RamcesPixelmc.aternos.me 🎮.",
+                    "La IP del servidor es RamcesPixelmc.aternos.me. ¡Te esperamos dentro!"
+                ];
+                return getRandomItem(r);
+            }
+
+            // DISCORD
+            if (q.includes('discord') || q.includes('dc')) {
+                const r = [
+                    "Entra a nuestro servidor de Discord con este enlace: https://discord.gg/F5B5br4WH 💬",
+                    "Puedes unirte a la comunidad en Discord aquí: https://discord.gg/F5B5br4WH",
+                    "Para hablar con los jugadores y el Staff, entra a nuestro Discord: https://discord.gg/F5B5br4WH"
+                ];
+                return getRandomItem(r);
+            }
+
+            // TIENDA
+            if (q.includes('tienda') || q.includes('comprar') || q.includes('rango') || q.includes('vip')) {
+                const r = [
+                    "Puedes revisar nuestros rangos VIP haciendo clic en el botón 'Tienda VIP' arriba.",
+                    "Contamos con rangos VIP, VIP+ y MVP. Haz clic en 'Tienda VIP' para ver los beneficios.",
+                    "Los rangos disponibles están en el menú 'Tienda VIP' de la página principal."
+                ];
+                return getRandomItem(r);
+            }
+
+            // SALUDOS
+            if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
+                const r = [
+                    "¡Hola! ¿Qué tal? ¿En qué te puedo ayudar hoy en RamcesPixel?",
+                    "¡Hey, bienvenido! ¿Tienes alguna duda sobre el servidor?",
+                    "¡Buenas! Qué gusto verte por aquí. ¿Qué necesitas saber?"
+                ];
+                return getRandomItem(r);
+            }
+
+            // AGRADECIMIENTOS
+            if (q.includes('gracias') || q.includes('thanks') || q.includes('ty')) {
+                const r = [
+                    "¡Con gusto! Aquí estaré si necesitas algo más 🎮.",
+                    "¡Para servirte! Disfruta de la comunidad.",
+                    "¡Nada que agradecer! Nos vemos en el juego."
+                ];
+                return getRandomItem(r);
+            }
+
+            // GENERADOR DE RESPUESTAS VARIADAS (Evita repetir siempre la misma frase)
+            const intros = [
+                "Buena pregunta. ",
+                "Entiendo lo que comentas. ",
+                "Sobre lo que mencionas, ",
+                "Te cuento al respecto: "
+            ];
+
+            const sugerencias = [
+                "Para obtener ayuda más detallada sobre ese tema especifico, te sugiero abrir un ticket o preguntar directo al Staff en nuestro Discord (https://discord.gg/F5B5br4WH). ¿Te ayudo con algo más?",
+                "Si es un caso muy específico del servidor, lo mejor es aclararlo directamente con un Administrador en Discord (https://discord.gg/F5B5br4WH). ¿Tienes alguna otra duda?",
+                "El equipo de soporte en Discord (https://discord.gg/F5B5br4WH) te puede resolver esa duda al instante si no tengo los datos a la mano. ¿Deseas consultar la IP o la tienda mientras tanto?"
+            ];
+
+            return getRandomItem(intros) + getRandomItem(sugerencias);
         }
     </script>
 </body>
