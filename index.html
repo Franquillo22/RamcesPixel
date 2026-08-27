@@ -10,14 +10,60 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* TEMA OSCURO (Por defecto) */
+        body.dark-theme {
+            background: radial-gradient(circle at center, #1a233a 0%, #090d16 100%);
+            color: #ffffff;
+        }
+
+        body.dark-theme .container {
+            background: rgba(18, 25, 44, 0.92);
+            border: 3px solid #ff9d00;
+            box-shadow: 0 0 30px rgba(255, 157, 0, 0.35);
+        }
+
+        body.dark-theme .ip-card {
+            background: #0f172a;
+            border: 2px dashed #00a2ff;
+        }
+
+        body.dark-theme .modal-content {
+            background: #12192c;
+            color: #fff;
+            border: 2px solid #ff9d00;
+        }
+
+        /* TEMA CLARO */
+        body.light-theme {
+            background: radial-gradient(circle at center, #e0e8f5 0%, #b8c9e8 100%);
+            color: #1a1a1a;
+        }
+
+        body.light-theme .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #e67e00;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .ip-card {
+            background: #eef4ff;
+            border: 2px dashed #0077cc;
+        }
+
+        body.light-theme p {
+            color: #4a5568 !important;
+        }
+
+        body.light-theme .modal-content {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 2px solid #e67e00;
         }
 
         body {
-            /* Imagen de fondo en vivo */
-            background: linear-gradient(rgba(10, 15, 29, 0.88), rgba(10, 15, 29, 0.95)), 
-                        url('https://i.imgur.com/uR1623C.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -26,47 +72,70 @@
             padding: 20px;
         }
 
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-settings {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        body.light-theme .btn-settings {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
         .container {
-            background: rgba(18, 25, 44, 0.88);
-            border: 3px solid #ff9d00;
             border-radius: 16px;
             padding: 40px;
             max-width: 600px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 0 30px rgba(255, 157, 0, 0.35);
             backdrop-filter: blur(8px);
+            position: relative;
         }
 
         .logo-header {
-            max-width: 300px;
+            max-width: 280px;
             width: 100%;
             height: auto;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 12px rgba(0, 162, 255, 0.6));
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         h1 {
             font-size: 2.2rem;
             color: #ff9d00;
-            text-shadow: 2px 2px 0px #000;
-            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
         }
 
         p {
             color: #c0d8f0;
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 25px;
         }
 
         .ip-card {
-            background: #0f172a;
-            border: 2px dashed #00a2ff;
             border-radius: 10px;
             padding: 15px 25px;
             margin-bottom: 30px;
             display: inline-block;
-            box-shadow: inset 0 0 10px rgba(0, 162, 255, 0.2);
         }
 
         .ip-text {
@@ -74,7 +143,6 @@
             font-weight: bold;
             color: #00d4ff;
             letter-spacing: 1px;
-            user-select: all;
         }
 
         .buttons-container {
@@ -91,16 +159,14 @@
             border-radius: 8px;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
         }
 
         .btn-discord {
             background: linear-gradient(135deg, #5865F2, #404EED);
             color: #ffffff;
-            border: 2px solid #7983f5;
         }
 
         .btn-discord:hover {
@@ -111,23 +177,77 @@
         .btn-tienda {
             background: linear-gradient(135deg, #ff9d00, #e67e00);
             color: #ffffff;
-            border: 2px solid #ffbe53;
         }
 
         .btn-tienda:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
         }
+
+        /* MODAL TIENDA Y AJUSTES */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff9d00;
+        }
+
+        .store-item {
+            background: rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,157,0,0.4);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-option {
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
-<body>
+<body class="dark-theme">
+
+    <!-- BARRA DE AJUSTES SUPERIOR -->
+    <div class="top-bar">
+        <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
+    </div>
 
     <div class="container">
-        <!-- Logo cargado directamente -->
-        <img src="logo.png" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.jpg';">
+        <!-- Logo subido a tu repositorio -->
+        <img src="logo.jpg" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.png';">
 
         <h1>¡Bienvenido a RamcesPixel!</h1>
-        <p>Hecho Por Ramces Explota Baños</p>
+        <p id="txt-sub">Hecho Por Ramces Explota Baños</p>
 
         <!-- Tarjeta de IP -->
         <div class="ip-card">
@@ -136,10 +256,116 @@
 
         <!-- Botones interactivos -->
         <div class="buttons-container">
-            <a href="https://discord.gg/F5B5br4WH" target="_blank" class="btn btn-discord">Unirse al Discord</a>
-            <a href="#" class="btn btn-tienda">Tienda VIP</a>
+            <a href="https://discord.gg/F5B5br4WH" target="_blank" class="btn btn-discord" id="btn-discord">Unirse al Discord</a>
+            <button class="btn btn-tienda" onclick="openModal('shopModal')" id="btn-shop">Tienda VIP</button>
         </div>
     </div>
+
+    <!-- VENTANA DE TIENDA VIP -->
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('shopModal')">&times;</span>
+            <h2 id="shop-title" style="color: #ff9d00; margin-bottom: 15px;">🛒 Tienda VIP RamcesPixel</h2>
+            
+            <div class="store-item">
+                <div>
+                    <strong>Rango VIP</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Fly + Kit Básico</p>
+                </div>
+                <span style="color: #00d4ff; font-weight: bold;">$2.99 USD</span>
+            </div>
+
+            <div class="store-item">
+                <div>
+                    <strong>Rango VIP+</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Fly + Kits + 2 Llaves</p>
+                </div>
+                <span style="color: #00d4ff; font-weight: bold;">$5.99 USD</span>
+            </div>
+
+            <div class="store-item">
+                <div>
+                    <strong>Rango MVP</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Beneficios Totales + Nick Color</p>
+                </div>
+                <span style="color: #00d4ff; font-weight: bold;">$9.99 USD</span>
+            </div>
+
+            <p style="margin-top: 15px; font-size: 0.85rem;" id="shop-footer">Contacta con un Administrador en Discord para realizar tu compra.</p>
+        </div>
+    </div>
+
+    <!-- VENTANA DE AJUSTES -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
+            <h2 id="settings-title" style="color: #ff9d00; margin-bottom: 15px;">⚙️ Configuración</h2>
+            
+            <div class="setting-option">
+                <span id="lbl-theme">Tema de pantalla:</span>
+                <button class="btn-settings" onclick="toggleTheme()" id="btn-theme-toggle">🌙 Oscuro</button>
+            </div>
+
+            <div class="setting-option">
+                <span id="lbl-lang">Idioma:</span>
+                <button class="btn-settings" onclick="toggleLanguage()" id="btn-lang-toggle">🇲🇽 Español</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // CAMBIAR TEMA (Claro / Oscuro)
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btn-theme-toggle');
+            if (body.classList.contains('dark-theme')) {
+                body.classList.replace('dark-theme', 'light-theme');
+                btn.textContent = '☀️ Claro';
+            } else {
+                body.classList.replace('light-theme', 'dark-theme');
+                btn.textContent = '🌙 Oscuro';
+            }
+        }
+
+        // CAMBIAR IDIOMA (Español / Inglés)
+        let currentLang = 'es';
+        function toggleLanguage() {
+            const btnLang = document.getElementById('btn-lang-toggle');
+            if (currentLang === 'es') {
+                currentLang = 'en';
+                btnLang.textContent = '🇺🇸 English';
+                document.getElementById('txt-settings-btn').textContent = 'Settings';
+                document.getElementById('txt-sub').textContent = 'Made by Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Join Discord';
+                document.getElementById('btn-shop').textContent = 'VIP Store';
+                document.getElementById('shop-title').textContent = '🛒 RamcesPixel VIP Store';
+                document.getElementById('shop-footer').textContent = 'Contact an Admin on Discord to complete your purchase.';
+                document.getElementById('settings-title').textContent = '⚙️ Settings';
+                document.getElementById('lbl-theme').textContent = 'Screen Theme:';
+                document.getElementById('lbl-lang').textContent = 'Language:';
+            } else {
+                currentLang = 'es';
+                btnLang.textContent = '🇲🇽 Español';
+                document.getElementById('txt-settings-btn').textContent = 'Ajustes';
+                document.getElementById('txt-sub').textContent = 'Hecho Por Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Unirse al Discord';
+                document.getElementById('btn-shop').textContent = 'Tienda VIP';
+                document.getElementById('shop-title').textContent = '🛒 Tienda VIP RamcesPixel';
+                document.getElementById('shop-footer').textContent = 'Contacta con un Administrador en Discord para realizar tu compra.';
+                document.getElementById('settings-title').textContent = '⚙️ Configuración';
+                document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
+                document.getElementById('lbl-lang').textContent = 'Idioma:';
+            }
+        }
+    </script>
 
 </body>
 </html>
