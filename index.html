@@ -99,7 +99,7 @@
         }
 
         .btn-settings {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             padding: 8px 15px;
@@ -115,6 +115,56 @@
             background: rgba(255, 255, 255, 0.8);
             color: #333;
             border: 1px solid #ccc;
+        }
+
+        /* REPRODUCTOR DE MÚSICA DE FONDO */
+        .music-player-bar {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(18, 25, 44, 0.9);
+            border: 2px solid #ff9d00;
+            border-radius: 30px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 98;
+            backdrop-filter: blur(5px);
+        }
+
+        body.light-theme .music-player-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e67e00;
+        }
+
+        .music-btn {
+            background: #ff9d00;
+            border: none;
+            color: #000;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .music-info {
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .music-info span {
+            font-size: 0.7rem;
+            color: #00d4ff;
+            font-weight: normal;
         }
 
         .container {
@@ -275,7 +325,7 @@
             text-align: left;
         }
 
-        /* FORMULARIO DE TARJETA AVANZADO */
+        /* FORMULARIO TARJETA */
         .card-form {
             display: flex;
             flex-direction: column;
@@ -318,7 +368,7 @@
             text-align: left;
         }
 
-        /* WIDGET DEL CHATBOT AI */
+        /* WIDGET CHATBOT AI */
         .ai-fab {
             position: fixed;
             bottom: 25px;
@@ -435,6 +485,19 @@
     </style>
 </head>
 <body class="dark-theme">
+
+    <!-- REPRODUCTOR DE MÚSICA DE FONDO (RESTAURANT JAZZ) -->
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="music-player-bar">
+        <button class="music-btn" id="musicPlayBtn" onclick="toggleMusic()">▶</button>
+        <div class="music-info">
+            ☕ Restaurant Jazz
+            <span id="musicStatus">Pausado</span>
+        </div>
+    </div>
 
     <div class="top-bar">
         <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
@@ -579,6 +642,24 @@
     </div>
 
     <script>
+        // MÚSICA DE FONDO (JAZZ)
+        const audio = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('musicPlayBtn');
+        const statusTxt = document.getElementById('musicStatus');
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸';
+                statusTxt.textContent = 'Reproduciendo';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+                statusTxt.textContent = 'Pausado';
+            }
+        }
+
+        // MODALES
         let selectedItem = "";
         let selectedPrice = "";
 
@@ -599,7 +680,7 @@
             openModal('checkoutModal');
         }
 
-        // ALGORITMO DE LUHN (Verifica validez del número de tarjeta)
+        // ALGORITMO DE LUHN (Verifica validez de tarjeta)
         function checkLuhn(cardNumber) {
             let s = 0;
             let doubleDigit = false;
@@ -615,7 +696,7 @@
             return (s % 10) === 0;
         }
 
-        // VALIDACIÓN DE FECHA FUTURA DE TARJETA
+        // VALIDACIÓN DE FECHA FUTURA
         function isFutureDate(mm, yy) {
             const now = new Date();
             const currentYear = parseInt(now.getFullYear().toString().slice(-2));
@@ -642,13 +723,13 @@
             const cvv = document.getElementById('cvv').value;
             const zip = document.getElementById('zipCode').value;
 
-            // 1. Validar número con Algoritmo de Luhn
+            // 1. Validar tarjeta (Luhn)
             if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
                 showError("❌ Tarjeta inválida o falsa. Ingresa un número válido de 16 dígitos.");
                 return;
             }
 
-            // 2. Validar Vencimiento
+            // 2. Validar Fecha
             const expParts = exp.split('/');
             if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
                 showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
@@ -661,17 +742,16 @@
                 return;
             }
 
-            // 4. Validar CP
+            // 4. Validar Código Postal
             if (!/^\d{5}$/.test(zip)) {
                 showError("❌ El Código Postal debe ser de 5 dígitos.");
                 return;
             }
 
-            // SI TODO ES VÁLIDO:
+            // SI TODO ES CORRECTO:
             alert(`¡Pago verificado correctamente para ${user}! Redirigiendo a Discord para contactar al Staff.`);
             closeModal('checkoutModal');
 
-            const message = encodeURIComponent(`Hola Staff, he realizado la compra del ${selectedItem} por $${selectedPrice} USD para el usuario de Minecraft: ${user}. Adjunto datos de confirmación.`);
             window.open('https://discord.gg/F5B5br4WH', '_blank');
         }
 
@@ -761,30 +841,19 @@
 
         function getAIResponse(q) {
             if (q.includes('idiota')) return "Lamento que lo veas así. Si cometí un error, dime cuál fue para corregirlo.";
-            if (q.includes('vete al diablo')) return "Prefiero quedarme aquí para ayudarte si cambias de opinión.";
-            if (q.includes('no sirves para nada') || q.includes('no sirves para un carajo')) return "Siento no haber cumplido tus expectativas. ¿Qué necesitas resolver exactamente?";
-            if (q.includes('basura de sistema') || q.includes('basura tecnologica')) return "Mi objetivo es ser útil. Dime en qué fallé y buscamos otra solución.";
-            if (q.includes('callate') || q.includes('cierra el hocico')) return "De acuerdo, guardo silencio hasta que decidas continuar.";
-            if (q.includes('estupido') || q.includes('estúpido')) return "A veces las respuestas no son perfectas. Cuéntame qué salió mal.";
-            if (q.includes('chinga tu madre')) return "Entiendo que estás frustrado, pero prefiero que nos comuniquemos con respeto.";
-            if (q.includes('pendejo')) return "Vaya, parece que no logré ayudarte esta vez. Probemos de otra forma.";
-            if (q.includes('novia') || q.includes('novio')) return "Qué halago, pero soy una IA y no puedo tener relaciones sentimentales. ¡Amigos sí!";
-            if (q.includes('te amo')) return "¡Gracias por el cariño! Me alegra mucho que disfrutes hablar conmigo.";
-            if (q.includes('hermosa') || q.includes('guapa') || q.includes('atractiva')) return "¡Qué lindo detalle! Aunque no tengo físico, aprecio mucho tu buena vibra.";
-            if (q.includes('creador') || q.includes('dueño') || q.includes('owner') || q.includes('quien creo') || q.includes('ramces')) return "El creador y desarrollador oficial del servidor es Ramces Explota Baños 👑.";
-            if (q.includes('ip') || q.includes('direccion') || q.includes('dirección')) return "La IP oficial para conectarte es: RamcesPixelmc.aternos.me 🚀";
-            if (q.includes('puerto') || q.includes('port')) return "Si juegas desde Java usa el puerto por defecto (25565). ¡Solo escribe la IP y listo!";
-            if (q.includes('discord') || q.includes('dc')) return "Únete a nuestra comunidad oficial en Discord aquí: https://discord.gg/F5B5br4WH 💬";
-            if (q.includes('tienda') || q.includes('store') || q.includes('comprar')) return "Abre el menú de 'Tienda VIP' arriba para adquirir los rangos VIP, VIP+ o MVP.";
+            if (q.includes('creador') || q.includes('dueño') || q.includes('ramces')) return "El creador y desarrollador oficial del servidor es Ramces Explota Baños 👑.";
+            if (q.includes('ip')) return "La IP oficial para conectarte es: RamcesPixelmc.aternos.me 🚀";
+            if (q.includes('discord')) return "Únete a nuestra comunidad oficial en Discord aquí: https://discord.gg/F5B5br4WH 💬";
+            if (q.includes('tienda') || q.includes('comprar')) return "Abre el menú de 'Tienda VIP' arriba para adquirir los rangos VIP, VIP+ o MVP.";
 
-            if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
+            if (q.includes('hola') || q.includes('buenas')) {
                 return "¡Hola! Qué gusto saludarte. ¿Cómo te puedo ayudar hoy en RamcesPixel? 😊";
             }
-            if (q.includes('gracias') || q.includes('ty') || q.includes('thanks')) {
+            if (q.includes('gracias')) {
                 return "¡De nada! Aquí estoy para lo que necesites. ¡Nos vemos dentro del servidor! 🎮🔥";
             }
 
-            return "Interesante pregunta 🤔. Si necesitas información detallada, puedes escribirle al Staff en nuestro Discord: https://discord.gg/F5B5br4WH";
+            return "Interesante pregunta 🤔. Puedes escribirle al Staff en nuestro Discord: https://discord.gg/F5B5br4WH";
         }
     </script>
 </body>
