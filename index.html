@@ -693,7 +693,7 @@
     </div>
 
     <script>
-        // API KEY DE TU CAPTURA DE PANTALLA
+        // API KEY DE TU CUENTA
         const API_KEY = "AQ.Ab8RN6I7futD3g-Wxmoj_qBQLbXenFFSmAAKFS02Ox-SsDkW5g";
 
         const audio = document.getElementById('bgMusic');
@@ -838,7 +838,7 @@
             }
         }
 
-        // --- CONEXIÓN DIRECTA CON GEMINI ---
+        // --- CONEXIÓN DE IA CON GEMINI (ACTUALIZADO A 2.5-FLASH) ---
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -855,7 +855,7 @@
             const msgs = document.getElementById('chatMsgs');
             const selectedModel = document.getElementById('aiModel').value;
             
-            // Mostrar mensaje del usuario
+            // Mensaje usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg msg-user';
             userMsg.textContent = txt;
@@ -863,7 +863,7 @@
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
-            // Mostrar animación de Pensando...
+            // Animación Pensando...
             const thinkingMsg = document.createElement('div');
             thinkingMsg.className = 'msg msg-bot thinking-msg';
             thinkingMsg.id = 'tempThinking';
@@ -901,7 +901,7 @@
                 ? "Eres RamcesAI, la inteligencia artificial del servidor de Minecraft RamcesPixel. Tu objetivo es responder con lógica, profundidad y análisis a cualquier tema que plantee el usuario (incluso fuera del servidor). Siempre analiza el contexto y termina tu mensaje realizando una pregunta interesante para continuar la conversación."
                 : "Eres RamcesAI del servidor RamcesPixel. Responde de forma breve, concisa y amistosa, añadiendo una pequeña pregunta al final.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
             const body = {
                 contents: [
