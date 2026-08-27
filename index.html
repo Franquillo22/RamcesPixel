@@ -13,7 +13,6 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* TEMA OSCURO */
         body.dark-theme {
             background: radial-gradient(circle at center, #1a233a 0%, #090d16 100%);
             color: #ffffff;
@@ -45,7 +44,6 @@
             color: #e2e8f0;
         }
 
-        /* TEMA CLARO */
         body.light-theme {
             background: radial-gradient(circle at center, #e0e8f5 0%, #b8c9e8 100%);
             color: #1a1a1a;
@@ -117,7 +115,6 @@
             border: 1px solid #ccc;
         }
 
-        /* REPRODUCTOR DE MÚSICA DE FONDO */
         .music-player-bar {
             position: fixed;
             bottom: 25px;
@@ -267,7 +264,6 @@
             color: #fff;
         }
 
-        /* MODALES */
         .modal {
             display: flex;
             position: fixed;
@@ -325,7 +321,6 @@
             text-align: left;
         }
 
-        /* FORMULARIO TARJETA */
         .card-form {
             display: flex;
             flex-direction: column;
@@ -368,7 +363,7 @@
             text-align: left;
         }
 
-        /* WIDGET CHATBOT AI */
+        /* WIDGET CHATBOT AI ESTILO GEMINI */
         .ai-fab {
             position: fixed;
             bottom: 25px;
@@ -398,7 +393,7 @@
             bottom: 95px;
             right: 25px;
             width: 340px;
-            height: 450px;
+            height: 460px;
             border-radius: 14px;
             display: flex;
             flex-direction: column;
@@ -456,6 +451,36 @@
             border-bottom-left-radius: 2px;
         }
 
+        /* ANIMACIÓN PENSANDO TIPO GEMINI */
+        .thinking-msg {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-style: italic;
+            color: #00d4ff;
+        }
+
+        .dots-loader {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dots-loader div {
+            width: 6px;
+            height: 6px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dots-loader div:nth-child(1) { animation-delay: -0.32s; }
+        .dots-loader div:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
         .chat-input-area {
             display: flex;
             padding: 10px;
@@ -486,7 +511,6 @@
 </head>
 <body class="dark-theme">
 
-    <!-- REPRODUCTOR DE MÚSICA DE FONDO (RESTAURANT JAZZ) -->
     <audio id="bgMusic" loop>
         <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
     </audio>
@@ -503,7 +527,6 @@
         <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
     </div>
 
-    <!-- PÁGINA PRINCIPAL -->
     <div class="container">
         <img src="logo.jpg" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.png';">
         <h1>¡Bienvenido a RamcesPixel!</h1>
@@ -519,7 +542,7 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y CHAT DE IA DINÁMICA -->
+    <!-- BOTÓN Y CHAT DE IA DINÁMICA CON PENSAMIENTO -->
     <button class="ai-fab" onclick="toggleChat()" title="Asistente RamcesAI">🤖</button>
 
     <div id="aiChat" class="chat-window">
@@ -528,15 +551,15 @@
             <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
         </div>
         <div class="chat-messages" id="chatMsgs">
-            <div class="msg msg-bot">¡Hola! Soy RamcesAI 🤖. Estoy listo para responder tus dudas sobre el servidor o conversar un rato. ¿De qué te gustaría hablar hoy?</div>
+            <div class="msg msg-bot">¡Hola! Soy RamcesAI. Puedo hablar de lo que quieras o resolver tus dudas sobre el servidor. ¿Qué tienes en mente?</div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe algo..." onkeypress="handleKeyPress(event)">
             <button class="chat-send" onclick="sendMsg()">Enviar</button>
         </div>
     </div>
 
-    <!-- VENTANA TIENDA VIP -->
+    <!-- MODAL TIENDA VIP -->
     <div id="shopModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('shopModal')">&times;</span>
@@ -571,7 +594,7 @@
         </div>
     </div>
 
-    <!-- VENTANA PASARELA DE PAGO / TARJETA -->
+    <!-- MODAL PASARELA DE PAGO -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('checkoutModal')">&times;</span>
@@ -623,7 +646,7 @@
         </div>
     </div>
 
-    <!-- VENTANA DE AJUSTES -->
+    <!-- MODAL AJUSTES -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
@@ -642,7 +665,6 @@
     </div>
 
     <script>
-        // REPRODUCTOR MÚSICA DE FONDO
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('musicPlayBtn');
         const statusTxt = document.getElementById('musicStatus');
@@ -659,17 +681,11 @@
             }
         }
 
-        // CONTROL DE MODALES
         let selectedItem = "";
         let selectedPrice = "";
 
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function openCheckout(item, price) {
             selectedItem = item;
@@ -680,7 +696,6 @@
             openModal('checkoutModal');
         }
 
-        // ALGORITMO DE LUHN
         function checkLuhn(cardNumber) {
             let s = 0;
             let doubleDigit = false;
@@ -700,14 +715,11 @@
             const now = new Date();
             const currentYear = parseInt(now.getFullYear().toString().slice(-2));
             const currentMonth = now.getMonth() + 1;
-
             const expMonth = parseInt(mm);
             const expYear = parseInt(yy);
-
             if (expMonth < 1 || expMonth > 12) return false;
             if (expYear < currentYear) return false;
             if (expYear === currentYear && expMonth < currentMonth) return false;
-            
             return true;
         }
 
@@ -723,27 +735,27 @@
             const zip = document.getElementById('zipCode').value;
 
             if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
-                showError("❌ Tarjeta inválida o falsa. Ingresa un número válido de 16 dígitos.");
+                showError("❌ Tarjeta inválida. Ingresa un número válido de 16 dígitos.");
                 return;
             }
 
             const expParts = exp.split('/');
             if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
-                showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
+                showError("❌ Tarjeta vencida o fecha incorrecta (MM/AA).");
                 return;
             }
 
             if (!/^\d{3,4}$/.test(cvv)) {
-                showError("❌ El código CVV debe ser de 3 o 4 dígitos.");
+                showError("❌ Código CVV de 3 o 4 dígitos.");
                 return;
             }
 
             if (!/^\d{5}$/.test(zip)) {
-                showError("❌ El Código Postal debe ser de 5 dígitos.");
+                showError("❌ Código Postal de 5 dígitos.");
                 return;
             }
 
-            alert(`¡Pago verificado correctamente para ${user}! Redirigiendo a Discord para contactar al Staff.`);
+            alert(`¡Pago verificado para ${user}! Redirigiendo a Discord.`);
             closeModal('checkoutModal');
             window.open('https://discord.gg/F5B5br4WH', '_blank');
         }
@@ -800,7 +812,7 @@
             }
         }
 
-        // LÓGICA DE IA DINÁMICA (GENERACIÓN ESTILO GEMINI)
+        // CHATBOT CON ANIMACIÓN "PENSANDO..." Y GENERACIÓN ESTILO GEMINI
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -816,113 +828,123 @@
 
             const msgs = document.getElementById('chatMsgs');
             
+            // 1. Mostrar mensaje del usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg msg-user';
             userMsg.textContent = txt;
             msgs.appendChild(userMsg);
             input.value = '';
+            msgs.scrollTop = msgs.scrollHeight;
+
+            // 2. Crear indicador de "Pensando..." con puntos animados
+            const thinkingMsg = document.createElement('div');
+            thinkingMsg.className = 'msg msg-bot thinking-msg';
+            thinkingMsg.id = 'tempThinking';
+            thinkingMsg.innerHTML = `
+                Pensando
+                <div class="dots-loader">
+                    <div></div><div></div><div></div>
+                </div>
+            `;
+            msgs.appendChild(thinkingMsg);
+            msgs.scrollTop = msgs.scrollHeight;
+
+            // 3. Simular tiempo de procesamiento (entre 1 a 1.8 segundos)
+            const randomDelay = Math.floor(Math.random() * 800) + 1000;
 
             setTimeout(() => {
+                // Eliminar el mensaje de carga
+                const temp = document.getElementById('tempThinking');
+                if (temp) temp.remove();
+
+                // Insertar respuesta generada
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg msg-bot';
-                botMsg.textContent = generateAIResponse(txt.toLowerCase());
+                botMsg.textContent = generateGeminiResponse(txt.toLowerCase());
                 msgs.appendChild(botMsg);
                 msgs.scrollTop = msgs.scrollHeight;
-            }, 400);
-
-            msgs.scrollTop = msgs.scrollHeight;
+            }, randomDelay);
         }
 
         function getRandomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        function generateAIResponse(q) {
-            // INSULTOS / DESAHOGOS
-            if (q.includes('idiota') || q.includes('pendejo') || q.includes('estupido') || q.includes('estúpido')) {
+        function generateGeminiResponse(q) {
+            // SLANG / PALABRAS RANDOM / JUEGOS
+            if (q.includes('gey') || q.includes('gay')) {
                 const r = [
-                    "Tranquilo, intentemos mantener el respeto. Dime qué fallo y lo solucionamos 🤝.",
-                    "Lamento si algo no salió como esperabas. ¿En qué puedo ayudarte adecuadamente?",
-                    "Entiendo tu descontento, pero estoy aquí para ayudarte si me explicas el problema."
+                    "¡Aquí todos son bienvenidos en RamcesPixel! 🌈 ¿Sueles jugar Minecraft con amigos o prefieres ir en solitario?",
+                    "Sin importar cómo seas, lo importante es pasarla bien en el server. ¿Ya conoces las reglas de la comunidad?",
+                    "¡Tranquilo! La diversión es para todos. ¿Te gustaría saber cómo conseguir rangos gratis en Discord?"
                 ];
                 return getRandomItem(r);
             }
 
-            // DATOS DEL CREADOR
-            if (q.includes('creador') || q.includes('dueño') || q.includes('ramces') || q.includes('owner')) {
+            if (q.includes('lol') || q.includes('xd') || q.includes('jaja')) {
                 const r = [
-                    "El servidor fue creado y desarrollado por Ramces Explota Baños 👑.",
-                    "El dueño y creador de todo el proyecto RamcesPixel es Ramces Explota Baños 🚀.",
-                    "¡Ramces Explota Baños es la mente maestra detrás de RamcesPixel!"
+                    "¡Me alegra sacarte una sonrisa! 😂 ¿Estás jugando en el servidor en este momento?",
+                    "¡Ja, ja, ja! La buena vibra nunca falta por aquí. ¿De qué te acordaste?",
+                    "¡Así se habla! ¿Qué fue lo más divertido que te ha pasado en Minecraft últimamente?"
                 ];
                 return getRandomItem(r);
             }
 
-            // DATOS DE IP Y PUERTO
-            if (q.includes('ip') || q.includes('direccion') || q.includes('dirección') || q.includes('puerto') || q.includes('port')) {
+            // INSULTOS / RETOS
+            if (q.includes('idiota') || q.includes('pendejo') || q.includes('estupido') || q.includes('estúpido') || q.includes('tonto')) {
                 const r = [
-                    "Puedes conectarte usando la IP: RamcesPixelmc.aternos.me (puerto por defecto 25565).",
-                    "La dirección oficial para entrar es: RamcesPixelmc.aternos.me 🎮.",
-                    "La IP del servidor es RamcesPixelmc.aternos.me. ¡Te esperamos dentro!"
+                    "¡Hey! Mis circuitos son sensibles 🤖. ¿Pasó algo en el servidor que te moleste?",
+                    "Intento hacerlo lo mejor posible. Cuéntame qué salió mal y lo resolvemos. ¿Va?",
+                    "Tranquilo, todos tenemos un mal día. ¿En qué te puedo ayudar para arreglar las cosas?"
                 ];
                 return getRandomItem(r);
             }
 
-            // DISCORD
-            if (q.includes('discord') || q.includes('dc')) {
-                const r = [
-                    "Entra a nuestro servidor de Discord con este enlace: https://discord.gg/F5B5br4WH 💬",
-                    "Puedes unirte a la comunidad en Discord aquí: https://discord.gg/F5B5br4WH",
-                    "Para hablar con los jugadores y el Staff, entra a nuestro Discord: https://discord.gg/F5B5br4WH"
-                ];
-                return getRandomItem(r);
+            // PREGUNTAS SOBRE MINECRAFT O EL SERVIDOR
+            if (q.includes('ip') || q.includes('puerto') || q.includes('entrar')) {
+                return "La IP es RamcesPixelmc.aternos.me (puerto 25565). ¿Qué versión de Minecraft sueles utilizar?";
             }
 
-            // TIENDA
-            if (q.includes('tienda') || q.includes('comprar') || q.includes('rango') || q.includes('vip')) {
-                const r = [
-                    "Puedes revisar nuestros rangos VIP haciendo clic en el botón 'Tienda VIP' arriba.",
-                    "Contamos con rangos VIP, VIP+ y MVP. Haz clic en 'Tienda VIP' para ver los beneficios.",
-                    "Los rangos disponibles están en el menú 'Tienda VIP' de la página principal."
-                ];
-                return getRandomItem(r);
+            if (q.includes('creador') || q.includes('dueño') || q.includes('ramces')) {
+                return "El dueño y creador de todo esto es Ramces Explota Baños. ¿Has hablado con él en el Discord?";
             }
 
-            // SALUDOS
+            if (q.includes('discord')) {
+                return "Puedes unirte al Discord oficial aquí: https://discord.gg/F5B5br4WH. ¿Ya tienes cuenta de Discord activada?";
+            }
+
+            if (q.includes('tienda') || q.includes('vip') || q.includes('rango')) {
+                return "Revisa los rangos VIP desde el botón 'Tienda VIP'. ¿Estás buscando algún beneficio en especial como volar o llaves?";
+            }
+
+            // SALUDOS Y PLATICA GENERAL
             if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
                 const r = [
-                    "¡Hola! ¿Qué tal? ¿En qué te puedo ayudar hoy en RamcesPixel?",
-                    "¡Hey, bienvenido! ¿Tienes alguna duda sobre el servidor?",
-                    "¡Buenas! Qué gusto verte por aquí. ¿Qué necesitas saber?"
+                    "¡Hola! Qué gusto saludarte. ¿Cómo va tu día en el mundo de Minecraft?",
+                    "¡Hey! Bienvenido de nuevo. ¿Estás buscando info del server o solo pasando el rato?",
+                    "¡Buenas! Todo tranquilo por aquí. ¿En qué puedo ayudarte hoy?"
                 ];
                 return getRandomItem(r);
             }
 
-            // AGRADECIMIENTOS
-            if (q.includes('gracias') || q.includes('thanks') || q.includes('ty')) {
-                const r = [
-                    "¡Con gusto! Aquí estaré si necesitas algo más 🎮.",
-                    "¡Para servirte! Disfruta de la comunidad.",
-                    "¡Nada que agradecer! Nos vemos en el juego."
-                ];
-                return getRandomItem(r);
-            }
-
-            // GENERADOR DE RESPUESTAS VARIADAS (Evita repetir siempre la misma frase)
-            const intros = [
-                "Buena pregunta. ",
-                "Entiendo lo que comentas. ",
-                "Sobre lo que mencionas, ",
-                "Te cuento al respecto: "
+            // GENERADOR DE CONVERSACIÓN LIBRE (Para cualquier otro tema fuera del server)
+            const reflexiones = [
+                "Ese es un tema bastante curioso.",
+                "Me pone a pensar lo que dices.",
+                "Interesante forma de verlo.",
+                "Entiendo a lo que te refieres.",
+                "No lo había pensado de esa manera."
             ];
 
-            const sugerencias = [
-                "Para obtener ayuda más detallada sobre ese tema especifico, te sugiero abrir un ticket o preguntar directo al Staff en nuestro Discord (https://discord.gg/F5B5br4WH). ¿Te ayudo con algo más?",
-                "Si es un caso muy específico del servidor, lo mejor es aclararlo directamente con un Administrador en Discord (https://discord.gg/F5B5br4WH). ¿Tienes alguna otra duda?",
-                "El equipo de soporte en Discord (https://discord.gg/F5B5br4WH) te puede resolver esa duda al instante si no tengo los datos a la mano. ¿Deseas consultar la IP o la tienda mientras tanto?"
+            const preguntasSeguimiento = [
+                " ¿Tú qué opina el resto sobre eso?",
+                " ¿Te ha pasado algo parecido recientemente?",
+                " ¿Qué harías tú en esa situación?",
+                " ¿Quieres cambiar de tema o te gustaría saber algo del servidor RamcesPixel?",
+                " ¿Qué te gusta hacer en tu tiempo libre además de jugar Minecraft?"
             ];
 
-            return getRandomItem(intros) + getRandomItem(sugerencias);
+            return getRandomItem(reflexiones) + getRandomItem(preguntasSeguimiento);
         }
     </script>
 </body>
