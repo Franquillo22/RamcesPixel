@@ -363,7 +363,7 @@
             text-align: left;
         }
 
-        /* WIDGET CHATBOT AI AVANZADO */
+        /* WIDGET CHATBOT AI */
         .ai-fab {
             position: fixed;
             bottom: 25px;
@@ -693,8 +693,8 @@
     </div>
 
     <script>
-        // API Key integrada
-        const API_KEY = "AQ.Ab8RN6L9bZXgKzet6z_pQdlKSVs11ayZapHSibroawUMYOn5Qg";
+        // API KEY DE TU CAPTURA DE PANTALLA
+        const API_KEY = "AQ.Ab8RN6I7futD3g-Wxmoj_qBQLbXenFFSmAAKFS02Ox-SsDkW5g";
 
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('musicPlayBtn');
@@ -838,7 +838,7 @@
             }
         }
 
-        // LÓGICA DE IA CON GEMINI
+        // --- CONEXIÓN DIRECTA CON GEMINI ---
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -855,7 +855,7 @@
             const msgs = document.getElementById('chatMsgs');
             const selectedModel = document.getElementById('aiModel').value;
             
-            // Mensaje usuario
+            // Mostrar mensaje del usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg msg-user';
             userMsg.textContent = txt;
@@ -863,7 +863,7 @@
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
-            // Indicador "Pensando..."
+            // Mostrar animación de Pensando...
             const thinkingMsg = document.createElement('div');
             thinkingMsg.className = 'msg msg-bot thinking-msg';
             thinkingMsg.id = 'tempThinking';
@@ -877,7 +877,6 @@
             msgs.appendChild(thinkingMsg);
             msgs.scrollTop = msgs.scrollHeight;
 
-            // Petición API
             try {
                 const respuestaIA = await obtenerRespuestaIA(txt, selectedModel);
                 document.getElementById('tempThinking')?.remove();
@@ -888,10 +887,11 @@
                 msgs.appendChild(botMsg);
                 msgs.scrollTop = msgs.scrollHeight;
             } catch (error) {
+                console.error("Error API:", error);
                 document.getElementById('tempThinking')?.remove();
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'msg msg-bot';
-                errorMsg.textContent = "Error al conectar con la IA. Revisa tu API Key o conexión.";
+                errorMsg.textContent = "Error de comunicación con la IA. Inténtalo de nuevo.";
                 msgs.appendChild(errorMsg);
             }
         }
@@ -901,12 +901,11 @@
                 ? "Eres RamcesAI, la inteligencia artificial del servidor de Minecraft RamcesPixel. Tu objetivo es responder con lógica, profundidad y análisis a cualquier tema que plantee el usuario (incluso fuera del servidor). Siempre analiza el contexto y termina tu mensaje realizando una pregunta interesante para continuar la conversación."
                 : "Eres RamcesAI del servidor RamcesPixel. Responde de forma breve, concisa y amistosa, añadiendo una pequeña pregunta al final.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
             const body = {
                 contents: [
                     {
-                        role: "user",
                         parts: [
                             { text: `${sistemaPrompt}\n\nEntrada del usuario: ${promptUsuario}` }
                         ]
@@ -924,6 +923,8 @@
             
             if (data.candidates && data.candidates[0].content.parts[0].text) {
                 return data.candidates[0].content.parts[0].text;
+            } else if (data.error) {
+                return `Error del servidor: ${data.error.message}`;
             } else {
                 return "No pude procesar la respuesta en este momento.";
             }
