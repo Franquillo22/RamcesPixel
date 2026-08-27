@@ -183,19 +183,26 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
         }
-
-        /* MODAL TIENDA Y AJUSTES */
+/* ANIMACIÓN Y ESTILOS DE MODALES */
         .modal {
-            display: none;
+            display: flex;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             justify-content: center;
             align-items: center;
             z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .modal-content {
@@ -205,6 +212,13 @@
             width: 90%;
             text-align: center;
             position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
         }
 
         .close-btn {
@@ -365,7 +379,66 @@
                 document.getElementById('lbl-lang').textContent = 'Idioma:';
             }
         }
-    </script>
+<script>
+        // ABRIR Y CERRAR CON ANIMACIÓN SUAVE
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // CERRAR AL HACER CLIC FUERA DE LA VENTANA
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // CAMBIAR TEMA (Claro / Oscuro)
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btn-theme-toggle');
+            if (body.classList.contains('dark-theme')) {
+                body.classList.replace('dark-theme', 'light-theme');
+                btn.textContent = '☀️ Claro';
+            } else {
+                body.classList.replace('light-theme', 'dark-theme');
+                btn.textContent = '🌙 Oscuro';
+            }
+        }
+
+        // CAMBIAR IDIOMA (Español / Inglés)
+        let currentLang = 'es';
+        function toggleLanguage() {
+            const btnLang = document.getElementById('btn-lang-toggle');
+            if (currentLang === 'es') {
+                currentLang = 'en';
+                btnLang.textContent = '🇺🇸 English';
+                document.getElementById('txt-settings-btn').textContent = 'Settings';
+                document.getElementById('txt-sub').textContent = 'Made by Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Join Discord';
+                document.getElementById('btn-shop').textContent = 'VIP Store';
+                document.getElementById('shop-title').textContent = '🛒 RamcesPixel VIP Store';
+                document.getElementById('shop-footer').textContent = 'Contact an Admin on Discord to complete your purchase.';
+                document.getElementById('settings-title').textContent = '⚙️ Settings';
+                document.getElementById('lbl-theme').textContent = 'Screen Theme:';
+                document.getElementById('lbl-lang').textContent = 'Language:';
+            } else {
+                currentLang = 'es';
+                btnLang.textContent = '🇲🇽 Español';
+                document.getElementById('txt-settings-btn').textContent = 'Ajustes';
+                document.getElementById('txt-sub').textContent = 'Hecho Por Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Unirse al Discord';
+                document.getElementById('btn-shop').textContent = 'Tienda VIP';
+                document.getElementById('shop-title').textContent = '🛒 Tienda VIP RamcesPixel';
+                document.getElementById('shop-footer').textContent = 'Contacta con un Administrador en Discord para realizar tu compra.';
+                document.getElementById('settings-title').textContent = '⚙️ Configuración';
+                document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
+                document.getElementById('lbl-lang').textContent = 'Idioma:';
+            }
+        
 
 </body>
 </html>
