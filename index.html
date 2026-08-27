@@ -363,7 +363,7 @@
             text-align: left;
         }
 
-        /* WIDGET CHATBOT AI ESTILO GEMINI */
+        /* WIDGET CHATBOT AI AVANZADO */
         .ai-fab {
             position: fixed;
             bottom: 25px;
@@ -392,8 +392,8 @@
             position: fixed;
             bottom: 95px;
             right: 25px;
-            width: 340px;
-            height: 460px;
+            width: 350px;
+            height: 490px;
             border-radius: 14px;
             display: flex;
             flex-direction: column;
@@ -414,12 +414,23 @@
         .chat-header {
             background: #ff9d00;
             color: #000;
-            padding: 12px 15px;
+            padding: 10px 15px;
             font-weight: bold;
             border-radius: 12px 12px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .model-selector {
+            background: rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.3);
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            outline: none;
+            font-weight: bold;
         }
 
         .chat-messages {
@@ -435,7 +446,7 @@
             max-width: 85%;
             padding: 10px 14px;
             border-radius: 12px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             line-height: 1.4;
         }
 
@@ -451,7 +462,6 @@
             border-bottom-left-radius: 2px;
         }
 
-        /* ANIMACIÓN PENSANDO TIPO GEMINI */
         .thinking-msg {
             display: flex;
             align-items: center;
@@ -483,7 +493,7 @@
 
         .chat-input-area {
             display: flex;
-            padding: 10px;
+            padding: 8px 10px;
             border-top: 1px solid rgba(255,255,255,0.1);
             gap: 8px;
         }
@@ -506,6 +516,15 @@
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .ai-disclaimer {
+            font-size: 0.68rem;
+            text-align: center;
+            padding: 4px 8px;
+            opacity: 0.7;
+            background: rgba(0,0,0,0.15);
+            border-radius: 0 0 12px 12px;
         }
     </style>
 </head>
@@ -542,20 +561,29 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y CHAT DE IA DINÁMICA CON PENSAMIENTO -->
+    <!-- BOTÓN Y CHAT CON SELECCIÓN DE MODELO Y AVISO -->
     <button class="ai-fab" onclick="toggleChat()" title="Asistente RamcesAI">🤖</button>
 
     <div id="aiChat" class="chat-window">
         <div class="chat-header">
-            <span>🤖 RamcesAI - Asistente</span>
-            <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
+            <span>🤖 RamcesAI</span>
+            <div>
+                <select id="aiModel" class="model-selector">
+                    <option value="flash">⚡ Flash (Rápido)</option>
+                    <option value="thinking">🧠 Thinking (Pensativo / Detallado)</option>
+                </select>
+                <span style="cursor:pointer; margin-left:8px;" onclick="toggleChat()">&times;</span>
+            </div>
         </div>
         <div class="chat-messages" id="chatMsgs">
-            <div class="msg msg-bot">¡Hola! Soy RamcesAI. Puedo hablar de lo que quieras o resolver tus dudas sobre el servidor. ¿Qué tienes en mente?</div>
+            <div class="msg msg-bot">¡Hola! Soy RamcesAI. Puedes preguntarme sobre el servidor o sobre cualquier otro tema. ¿De qué te gustaría hablar hoy?</div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe algo..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe un mensaje..." onkeypress="handleKeyPress(event)">
             <button class="chat-send" onclick="sendMsg()">Enviar</button>
+        </div>
+        <div class="ai-disclaimer">
+            RamcesAI puede cometer errores. Verifica la información importante.
         </div>
     </div>
 
@@ -681,15 +709,10 @@
             }
         }
 
-        let selectedItem = "";
-        let selectedPrice = "";
-
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function openCheckout(item, price) {
-            selectedItem = item;
-            selectedPrice = price;
             document.getElementById('checkout-item-desc').textContent = `Comprando: ${item} ($${price} USD)`;
             document.getElementById('errorBox').style.display = 'none';
             closeModal('shopModal');
@@ -812,7 +835,7 @@
             }
         }
 
-        // CHATBOT CON ANIMACIÓN "PENSANDO..." Y GENERACIÓN ESTILO GEMINI
+        // LÓGICA DE IA CON CAMBIO DE MODELOS Y TIEMPO PENSATIVO
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -827,6 +850,7 @@
             if (!txt) return;
 
             const msgs = document.getElementById('chatMsgs');
+            const selectedModel = document.getElementById('aiModel').value;
             
             // 1. Mostrar mensaje del usuario
             const userMsg = document.createElement('div');
@@ -836,12 +860,13 @@
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
-            // 2. Crear indicador de "Pensando..." con puntos animados
+            // 2. Indicador de pensamiento
             const thinkingMsg = document.createElement('div');
             thinkingMsg.className = 'msg msg-bot thinking-msg';
             thinkingMsg.id = 'tempThinking';
+            const label = selectedModel === 'thinking' ? 'Pensando profundamente...' : 'Pensando...';
             thinkingMsg.innerHTML = `
-                Pensando
+                ${label}
                 <div class="dots-loader">
                     <div></div><div></div><div></div>
                 </div>
@@ -849,102 +874,63 @@
             msgs.appendChild(thinkingMsg);
             msgs.scrollTop = msgs.scrollHeight;
 
-            // 3. Simular tiempo de procesamiento (entre 1 a 1.8 segundos)
-            const randomDelay = Math.floor(Math.random() * 800) + 1000;
+            // 3. Control de tiempo según modelo elegido
+            const delay = selectedModel === 'thinking' ? 3500 : 1200;
 
             setTimeout(() => {
-                // Eliminar el mensaje de carga
                 const temp = document.getElementById('tempThinking');
                 if (temp) temp.remove();
 
-                // Insertar respuesta generada
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg msg-bot';
-                botMsg.textContent = generateGeminiResponse(txt.toLowerCase());
+                botMsg.textContent = generateAdvancedResponse(txt, selectedModel);
                 msgs.appendChild(botMsg);
                 msgs.scrollTop = msgs.scrollHeight;
-            }, randomDelay);
+            }, delay);
         }
 
         function getRandomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        function generateGeminiResponse(q) {
-            // SLANG / PALABRAS RANDOM / JUEGOS
+        function generateAdvancedResponse(inputTxt, model) {
+            const q = inputTxt.toLowerCase();
+
+            // CASOS ESPECÍFICOS Y SLANG
             if (q.includes('gey') || q.includes('gay')) {
-                const r = [
-                    "¡Aquí todos son bienvenidos en RamcesPixel! 🌈 ¿Sueles jugar Minecraft con amigos o prefieres ir en solitario?",
-                    "Sin importar cómo seas, lo importante es pasarla bien en el server. ¿Ya conoces las reglas de la comunidad?",
-                    "¡Tranquilo! La diversión es para todos. ¿Te gustaría saber cómo conseguir rangos gratis en Discord?"
-                ];
-                return getRandomItem(r);
+                return model === 'thinking'
+                    ? "En la comunidad de RamcesPixel valoramos el respeto y la inclusión de todas las personas sin importar su orientación. Todos son bienvenidos a jugar y pasar un buen rato. ¿Sueles jugar con amigos dentro del servidor o prefieres aventurarte por tu cuenta?"
+                    : "¡Todos son bienvenidos en RamcesPixel! 🌈 ¿Sueles jugar Minecraft en solitario o con tu grupo de amigos?";
             }
 
-            if (q.includes('lol') || q.includes('xd') || q.includes('jaja')) {
-                const r = [
-                    "¡Me alegra sacarte una sonrisa! 😂 ¿Estás jugando en el servidor en este momento?",
-                    "¡Ja, ja, ja! La buena vibra nunca falta por aquí. ¿De qué te acordaste?",
-                    "¡Así se habla! ¿Qué fue lo más divertido que te ha pasado en Minecraft últimamente?"
-                ];
-                return getRandomItem(r);
+            if (q.includes('hola') || q.includes('buenas')) {
+                return "¡Hola! Qué gusto saludarte. ¿Cómo va tu día? ¿Estás jugando en el servidor de Minecraft en este momento?";
             }
 
-            // INSULTOS / RETOS
-            if (q.includes('idiota') || q.includes('pendejo') || q.includes('estupido') || q.includes('estúpido') || q.includes('tonto')) {
-                const r = [
-                    "¡Hey! Mis circuitos son sensibles 🤖. ¿Pasó algo en el servidor que te moleste?",
-                    "Intento hacerlo lo mejor posible. Cuéntame qué salió mal y lo resolvemos. ¿Va?",
-                    "Tranquilo, todos tenemos un mal día. ¿En qué te puedo ayudar para arreglar las cosas?"
-                ];
-                return getRandomItem(r);
-            }
-
-            // PREGUNTAS SOBRE MINECRAFT O EL SERVIDOR
-            if (q.includes('ip') || q.includes('puerto') || q.includes('entrar')) {
-                return "La IP es RamcesPixelmc.aternos.me (puerto 25565). ¿Qué versión de Minecraft sueles utilizar?";
+            if (q.includes('ip') || q.includes('puerto')) {
+                return "La IP es RamcesPixelmc.aternos.me (puerto 25565). ¿En qué versión de Minecraft sueles entrar?";
             }
 
             if (q.includes('creador') || q.includes('dueño') || q.includes('ramces')) {
-                return "El dueño y creador de todo esto es Ramces Explota Baños. ¿Has hablado con él en el Discord?";
+                return "El creador y desarrollador de RamcesPixel es Ramces Explota Baños. ¿Ya lo has visto en el Discord oficial?";
             }
 
-            if (q.includes('discord')) {
-                return "Puedes unirte al Discord oficial aquí: https://discord.gg/F5B5br4WH. ¿Ya tienes cuenta de Discord activada?";
-            }
-
-            if (q.includes('tienda') || q.includes('vip') || q.includes('rango')) {
-                return "Revisa los rangos VIP desde el botón 'Tienda VIP'. ¿Estás buscando algún beneficio en especial como volar o llaves?";
-            }
-
-            // SALUDOS Y PLATICA GENERAL
-            if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
-                const r = [
-                    "¡Hola! Qué gusto saludarte. ¿Cómo va tu día en el mundo de Minecraft?",
-                    "¡Hey! Bienvenido de nuevo. ¿Estás buscando info del server o solo pasando el rato?",
-                    "¡Buenas! Todo tranquilo por aquí. ¿En qué puedo ayudarte hoy?"
+            // SIMULACIÓN DE RAZONAMIENTO EN BASE AL MODELO
+            if (model === 'thinking') {
+                const reflexionesProfundas = [
+                    `Analizando tu mensaje "${inputTxt}": Es una perspectiva bastante interesante. Desde un punto de vista general, esto abre varios puntos a debatir. ¿Qué fue lo que te llevó a pensar en esto en primer lugar?`,
+                    `Evaluando la idea "${inputTxt}"... Me parece un tema con muchos matices. ¿Cómo consideras que esto afecta tu experiencia diaria o tu forma de ver las cosas?`,
+                    `Procesando el contexto de lo que me comentas... Es una consulta profunda. Si tuvieras que tomar una postura o decisión sobre esto, ¿cuál elegirías y por qué?`
                 ];
-                return getRandomItem(r);
+                return getRandomItem(reflexionesProfundas);
+            } else {
+                const respuestasFlash = [
+                    `Entiendo tu comentario sobre "${inputTxt}". ¿Hay algo más de este tema que te llame la atención o prefieres hablar sobre el servidor?`,
+                    `Curiosa observación. ¿Te ha ocurrido alguna situación parecida recientemente?`,
+                    `¡Buena observación! ¿Qué opinas tú al respecto sobre cómo debería solucionarse o tratarse ese tema?`
+                ];
+                return getRandomItem(respuestasFlash);
             }
-
-            // GENERADOR DE CONVERSACIÓN LIBRE (Para cualquier otro tema fuera del server)
-            const reflexiones = [
-                "Ese es un tema bastante curioso.",
-                "Me pone a pensar lo que dices.",
-                "Interesante forma de verlo.",
-                "Entiendo a lo que te refieres.",
-                "No lo había pensado de esa manera."
-            ];
-
-            const preguntasSeguimiento = [
-                " ¿Tú qué opina el resto sobre eso?",
-                " ¿Te ha pasado algo parecido recientemente?",
-                " ¿Qué harías tú en esa situación?",
-                " ¿Quieres cambiar de tema o te gustaría saber algo del servidor RamcesPixel?",
-                " ¿Qué te gusta hacer en tu tiempo libre además de jugar Minecraft?"
-            ];
-
-            return getRandomItem(reflexiones) + getRandomItem(preguntasSeguimiento);
         }
     </script>
 </body>
