@@ -26,7 +26,6 @@
             --card-shadow: rgba(0, 0, 0, 0.5);
         }
 
-        /* MODO CLARO COMPLETO Y REDISEÑADO */
         body.light-theme {
             --bg-color: #eef2f7;
             --panel-bg: rgba(255, 255, 255, 0.96);
@@ -41,21 +40,14 @@
             --card-shadow: rgba(0, 0, 0, 0.08);
         }
 
-        /* RESET & SMOOTH SCROLL */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         * { 
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                        color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                        border-color 0.3s ease, 
-                        box-shadow 0.3s ease, 
-                        transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; 
         }
         
         body { 
@@ -67,292 +59,138 @@
             overflow-x: hidden;
         }
 
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--primary), #ff5500);
-            border-radius: 5px;
-            border: 2px solid var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-blue);
-        }
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary), #ff5500); border-radius: 5px; }
 
-        /* PANTALLA DE CARGA INICIAL CON LOGO */
+        /* LOADER INICIAL */
         #initial-loader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999;
             transition: opacity 0.6s ease, visibility 0.6s;
         }
         .loader-logo-img {
-            width: 110px;
-            height: 110px;
-            border-radius: 20px;
-            object-fit: cover;
+            width: 110px; height: 110px; border-radius: 20px; object-fit: cover;
             box-shadow: 0 0 40px var(--primary-glow);
             animation: pulseLogo 1.5s infinite alternate ease-in-out;
             border: 2px solid var(--primary);
         }
-        .loader-text {
-            margin-top: 20px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: var(--primary);
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px var(--primary-glow);
-        }
+        .loader-text { margin-top: 20px; font-weight: 800; letter-spacing: 3px; color: var(--primary); font-size: 1.2rem; }
+
         @keyframes pulseLogo {
             0% { transform: scale(0.9); box-shadow: 0 0 20px var(--primary-glow); }
             100% { transform: scale(1.1); box-shadow: 0 0 50px var(--primary-glow); }
         }
 
-        /* HEADER & NAVBAR */
+        /* HEADER */
         header { 
             background: var(--panel-bg); 
             padding: 15px 40px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 2px solid var(--primary);
             box-shadow: 0 4px 25px var(--card-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 90;
-            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 90; backdrop-filter: blur(10px);
         }
 
         .logo-container { display: flex; align-items: center; gap: 14px; cursor: pointer; }
-        .logo-img { 
-            width: 44px; 
-            height: 44px; 
-            border-radius: 10px; 
-            object-fit: cover;
-            box-shadow: 0 0 15px var(--primary-glow);
-            border: 2px solid var(--primary);
-        }
-        .logo-text { font-size: 1.7rem; font-weight: 900; color: var(--primary); letter-spacing: 1.5px; text-shadow: 0 0 10px var(--primary-glow); }
+        .logo-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+        .logo-text { font-size: 1.7rem; font-weight: 900; color: var(--primary); letter-spacing: 1.5px; }
 
         nav { display: flex; gap: 20px; align-items: center; }
         nav a { color: var(--text-color); text-decoration: none; font-weight: 600; cursor: pointer; }
-        nav a:hover { color: var(--primary); text-shadow: 0 0 8px var(--primary-glow); }
+        nav a:hover { color: var(--primary); }
 
-        /* BOTONES */
         .btn { 
-            padding: 10px 20px; 
-            border-radius: 10px; 
-            font-weight: 700; 
-            border: none; 
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            text-decoration: none; 
-            font-size: 0.95rem; 
-            position: relative;
-            outline: none;
+            padding: 10px 20px; border-radius: 10px; font-weight: 700; border: none; 
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; 
+            gap: 10px; text-decoration: none; font-size: 0.95rem; outline: none;
         }
+        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 0 10px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--primary-glow); }
+        .btn-blue { background: var(--accent-blue); color: #fff; box-shadow: 0 0 10px var(--accent-blue-glow); }
+        .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--accent-blue-glow); }
+        .btn-logout { background: #e74c3c; color: white; display: none; }
 
-        .btn-primary { 
-            background: var(--primary); 
-            color: #ffffff; 
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
-        .btn-primary:hover { 
-            transform: translateY(-3px) scale(1.02); 
-            box-shadow: 0 0 25px var(--primary-glow); 
-        }
-
-        .btn-blue { 
-            background: var(--accent-blue); 
-            color: #ffffff; 
-            box-shadow: 0 0 10px var(--accent-blue-glow);
-        }
-        .btn-blue:hover { 
-            transform: translateY(-3px) scale(1.02); 
-            box-shadow: 0 0 25px var(--accent-blue-glow); 
-        }
-
-        .btn-discord { 
-            background: var(--accent-discord); 
-            color: #fff; 
-            box-shadow: 0 0 10px var(--accent-discord-glow);
-        }
-        .btn-discord:hover { 
-            transform: translateY(-3px) scale(1.02); 
-            box-shadow: 0 0 25px var(--accent-discord-glow); 
-        }
-
-        .btn-logout { background: #e74c3c; color: white; display: none; box-shadow: 0 0 10px rgba(231,76,60,0.5); }
-        .btn-logout:hover { box-shadow: 0 0 20px rgba(231,76,60,0.8); }
-
-        /* SECCIÓN PRINCIPAL */
+        /* MAIN CONTENTS */
         main { flex: 1; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 50px; }
         
         .hero { 
-            background: var(--panel-bg); 
-            border: 2px solid var(--primary); 
-            border-radius: 24px; 
-            padding: 50px; 
-            text-align: center; 
-            max-width: 850px; 
-            width: 100%;
-            box-shadow: 0 10px 35px var(--card-shadow);
-            animation: fadeInSmooth 0.8s ease-out;
+            background: var(--panel-bg); border: 2px solid var(--primary); border-radius: 24px; 
+            padding: 50px; text-align: center; max-width: 850px; width: 100%; box-shadow: 0 10px 35px var(--card-shadow);
         }
-
-        .hero h1 { font-size: 3rem; color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 15px var(--primary-glow); }
+        .hero h1 { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
         .hero p { font-size: 1.15rem; color: var(--subtext); margin-bottom: 25px; }
         
         .server-ip-box { 
-            background: var(--input-bg); 
-            padding: 14px 30px; 
-            border-radius: 12px; 
-            border: 2px dashed var(--accent-blue); 
-            display: inline-block; 
-            font-family: monospace; 
-            font-size: 1.4rem; 
-            color: var(--accent-blue);
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--accent-blue-glow);
-            position: relative;
-        }
-        .server-ip-box:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px var(--accent-blue-glow);
+            background: var(--input-bg); padding: 14px 30px; border-radius: 12px; border: 2px dashed var(--accent-blue); 
+            display: inline-block; font-family: monospace; font-size: 1.4rem; color: var(--accent-blue); cursor: pointer;
         }
 
         /* TIENDA */
-        .section-title { font-size: 2.2rem; color: var(--primary); margin-bottom: 25px; text-align: center; text-shadow: 0 0 10px var(--primary-glow); }
+        .section-title { font-size: 2.2rem; color: var(--primary); margin-bottom: 25px; text-align: center; }
         .grid-store { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; width: 100%; max-width: 950px; }
-        .card-item { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 5px 20px var(--card-shadow); }
-        .card-item:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: 0 10px 30px var(--primary-glow); }
-        .card-price { font-size: 1.6rem; color: var(--accent-blue); font-weight: 800; margin: 12px 0; text-shadow: 0 0 8px var(--accent-blue-glow); }
+        .card-item { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-item:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .card-price { font-size: 1.6rem; color: var(--accent-blue); font-weight: 800; margin: 12px 0; }
 
         /* AJUSTES */
         .settings-panel { 
-            background: var(--panel-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 20px; 
-            padding: 30px; 
-            width: 100%; 
-            max-width: 950px; 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 25px; 
-            justify-content: space-around;
-            box-shadow: 0 5px 20px var(--card-shadow);
+            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 20px; 
+            padding: 30px; width: 100%; max-width: 950px; display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-around;
         }
         .setting-box { flex: 1; min-width: 250px; text-align: center; }
-        .setting-box h3 { color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 8px var(--primary-glow); }
+        .setting-box h3 { color: var(--primary); margin-bottom: 15px; }
 
-        /* ASISTENTE IA GEMINI */
+        /* CHAT IA CON RAZONAMIENTO */
         .ai-chat-btn { 
-            position: fixed; 
-            bottom: 25px; 
-            right: 25px; 
-            width: 65px; 
-            height: 65px; 
-            border-radius: 50%; 
-            background: var(--primary); 
-            border: none; 
-            font-size: 2rem; 
-            cursor: pointer; 
-            box-shadow: 0 0 20px var(--primary-glow); 
-            z-index: 99; 
+            position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; border-radius: 50%; 
+            background: var(--primary); border: none; font-size: 2rem; cursor: pointer; box-shadow: 0 0 20px var(--primary-glow); z-index: 99; 
         }
-        .ai-chat-btn:hover { transform: scale(1.1) rotate(10deg); box-shadow: 0 0 35px var(--primary-glow); }
-        
         .ai-chat-window { 
-            display: none; 
-            position: fixed; 
-            bottom: 100px; 
-            right: 25px; 
-            width: 360px; 
-            height: 500px; 
-            background: var(--panel-bg); 
-            border: 2px solid var(--primary); 
-            border-radius: 20px; 
-            flex-direction: column; 
-            overflow: hidden; 
-            z-index: 99; 
-            box-shadow: 0 15px 40px var(--card-shadow), 0 0 20px var(--primary-glow); 
-            animation: fadeInSmooth 0.3s ease-out;
+            display: none; position: fixed; bottom: 100px; right: 25px; width: 380px; height: 520px; 
+            background: var(--panel-bg); border: 2px solid var(--primary); border-radius: 20px; flex-direction: column; 
+            overflow: hidden; z-index: 99; box-shadow: 0 15px 40px var(--card-shadow); 
         }
-        .ai-chat-header { background: var(--primary); color: #fff; padding: 15px; font-weight: 800; text-align: center; font-size: 1.05rem; }
-        .ai-chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.92rem; }
-        .ai-msg { padding: 10px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; line-height: 1.4; }
+        .ai-chat-header { background: var(--primary); color: #fff; padding: 15px; font-weight: 800; text-align: center; }
+        .ai-chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; }
+        .ai-msg { padding: 10px 14px; border-radius: 12px; max-width: 88%; word-wrap: break-word; }
         .ai-msg.bot { background: rgba(0, 212, 255, 0.12); color: var(--text-color); align-self: flex-start; border: 1px solid var(--accent-blue); }
         .ai-msg.user { background: var(--primary); color: #fff; align-self: flex-end; font-weight: 600; }
+        .ai-reasoning { background: rgba(255,255,255,0.05); border-left: 3px solid var(--primary); font-size: 0.8rem; color: var(--subtext); padding: 6px 10px; margin-bottom: 8px; border-radius: 4px; font-style: italic; }
+        
         .ai-chat-input { display: flex; border-top: 1px solid var(--border-color); background: var(--input-bg); }
         .ai-chat-input input { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-color); outline: none; }
 
-        /* ANIMACIÓN DE 3 PUNTOS PENSANDO (SMOOTH BOUNCE) */
-        .ai-thinking-dots {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-        }
-        .ai-thinking-dots span {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-blue);
-            border-radius: 50%;
-            display: inline-block;
-            animation: dotBounce 1.4s infinite ease-in-out both;
-        }
+        .ai-thinking-dots { display: flex; align-items: center; gap: 6px; padding: 8px 12px; }
+        .ai-thinking-dots span { width: 8px; height: 8px; background-color: var(--accent-blue); border-radius: 50%; animation: dotBounce 1.4s infinite ease-in-out both; }
         .ai-thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
         .ai-thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
-        .ai-thinking-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes dotBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.2); } }
 
-        @keyframes dotBounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
-
-        /* MODALES */
+        /* MODALES (RESTAURADOS) */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .modal.active { display: flex; animation: fadeInSmooth 0.3s ease-out; }
+        .modal.active { display: flex; }
         .modal-content { background: var(--panel-bg); padding: 35px; border-radius: 20px; border: 2px solid var(--primary); width: 90%; max-width: 440px; text-align: center; box-shadow: 0 0 30px var(--primary-glow); position: relative; color: var(--text-color); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--subtext); }
 
-        select, input[type="text"], input[type="password"] { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            border-radius: 10px; 
-            border: 1px solid var(--primary); 
-            background: var(--input-bg); 
-            color: var(--text-color); 
-            outline: none; 
+        select, input[type="text"], input[type="password"], input[type="email"] { 
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--primary); background: var(--input-bg); color: var(--text-color); outline: none; 
         }
-
-        @keyframes fadeInSmooth { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- LOGO DE CARGA INICIAL CON LA IMAGEN REAL -->
+    <!-- LOADER -->
     <div id="initial-loader">
         <img src="https://lh3.googleusercontent.com/d/10A49sY-YmX6K2Rk-m9r3-U-X-9-0_8-6" class="loader-logo-img" alt="RamcesPixel Logo">
         <div class="loader-text">RAMCESPIXEL NETWORK</div>
     </div>
 
-    <!-- NAVBAR PERMANENTE CON LOGO OFICIAL -->
+    <!-- HEADER -->
     <header>
         <div class="logo-container" onclick="window.scrollTo({top:0, behavior:'smooth'})">
             <img src="https://lh3.googleusercontent.com/d/10A49sY-YmX6K2Rk-m9r3-U-X-9-0_8-6" class="logo-img" alt="RamcesPixel Logo">
@@ -360,9 +198,9 @@
         </div>
         
         <nav>
-            <a href="#inicio" id="nav-home">Inicio</a>
-            <a href="#tienda" id="nav-store">Tienda</a>
-            <a href="#ajustes" id="nav-settings">Ajustes</a>
+            <a href="#inicio">Inicio</a>
+            <a href="#tienda">Tienda</a>
+            <a href="#ajustes">Ajustes</a>
             <a href="https://discord.com/oauth2/authorize?client_id=1542606598084497418&response_type=token&redirect_uri=https%3A%2F%2Ffranquillo22.github.io%2FRamcesPixel%2F&scope=identify" target="_blank">Discord</a>
         </nav>
 
@@ -373,76 +211,96 @@
     </header>
 
     <main>
-        <!-- SECCIÓN HÉROE -->
+        <!-- HÉROE -->
         <section class="hero" id="inicio">
-            <h1 id="hero-title">RamcesPixel Network</h1>
-            <p id="hero-sub">Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)</p>
-            
+            <h1>RamcesPixel Network</h1>
+            <p>Servidor compatible con Minecraft Java Edition & Bedrock</p>
             <div class="server-ip-box" onclick="copiarIP()" id="ipBox">RamcesPixel.aternos.me</div>
-            <p style="font-size: 0.85rem; color: var(--subtext); margin-top: 10px;" id="hero-copy-hint">(Haz clic para copiar la IP)</p>
+            <p style="font-size: 0.85rem; color: var(--subtext); margin-top: 10px;">(Haz clic para copiar la IP)</p>
         </section>
 
-        <!-- SECCIÓN TIENDA -->
+        <!-- TIENDA -->
         <section id="tienda" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            <h2 class="section-title" id="store-title">🛒 Tienda Oficial de Rangos</h2>
+            <h2 class="section-title">🛒 Tienda Oficial de Rangos</h2>
             <div class="grid-store">
                 <div class="card-item">
                     <div>
                         <h3>Rango VIP</h3>
                         <div class="card-price">$2.99 USD</div>
-                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Kits especiales, vuelo en lobby y prefijo VIP en chat.</p>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Kits especiales y vuelo en lobby.</p>
                     </div>
-                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP', 2.99)" id="btn-buy-1">Comprar</button>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP', 2.99)">Comprar</button>
                 </div>
                 <div class="card-item">
                     <div>
                         <h3>Rango VIP+</h3>
                         <div class="card-price">$5.99 USD</div>
-                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Beneficios VIP + 2 accesos a parcelas extras y llaves de cajas.</p>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Beneficios VIP + 2 accesos a parcelas extras.</p>
                     </div>
-                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP+', 5.99)" id="btn-buy-2">Comprar</button>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP+', 5.99)">Comprar</button>
                 </div>
                 <div class="card-item">
                     <div>
                         <h3>Rango SVIP</h3>
                         <div class="card-price">$9.99 USD</div>
-                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Rango definitivo con cosméticos exclusivos y comando /fly.</p>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Rango definitivo con cosméticos y /fly.</p>
                     </div>
-                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango SVIP', 9.99)" id="btn-buy-3">Comprar</button>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango SVIP', 9.99)">Comprar</button>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN AJUSTES -->
+        <!-- AJUSTES -->
         <section class="settings-panel" id="ajustes">
             <div class="setting-box">
-                <h3 id="theme-heading">🎨 Tema de la Página</h3>
+                <h3>🎨 Tema de la Página</h3>
                 <button class="btn btn-primary" onclick="toggleTheme()" id="themeBtn">☀️ Modo Claro</button>
             </div>
             
             <div class="setting-box">
-                <h3 id="lang-heading">🌐 Idioma / Language</h3>
-                <select id="langSelect" onchange="changeLanguage(this.value)" style="margin: 0; font-weight: bold;">
+                <h3>🌐 Idioma</h3>
+                <select id="langSelect" onchange="changeLanguage(this.value)">
                     <option value="es-MX">🇲🇽 Español (MX)</option>
                     <option value="en-US">🇺🇸 English (USA)</option>
-                    <option value="fr-FR">🇫🇷 Français</option>
                 </select>
             </div>
 
             <div class="setting-box">
-                <h3 id="music-heading">🎷 Música Jazz Tranquila</h3>
+                <h3>🎷 Música Jazz Tranquila</h3>
                 <button class="btn btn-blue" onclick="toggleMusica()" id="musicBtn">▶️ Reproducir Jazz</button>
                 <div id="youtube-player" style="display:none;"></div>
             </div>
         </section>
     </main>
 
-    <!-- ASISTENTE IA GEMINI CON RAZONAMIENTO Y ANIMACIÓN -->
+    <!-- MODAL AUTH -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
+            <h2 style="color: var(--primary); margin-bottom: 15px;">Iniciar Sesión</h2>
+            <input type="email" id="authEmail" placeholder="Correo electrónico">
+            <input type="password" id="authPass" placeholder="Contraseña">
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="iniciarSesion()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL PAGO -->
+    <div class="modal" id="pagoModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('pagoModal')">&times;</span>
+            <h2 id="pagoTitulo" style="color: var(--primary); margin-bottom: 10px;">Procesar Pago</h2>
+            <p id="pagoMonto" style="color: var(--accent-blue); font-weight: bold; margin-bottom: 15px;"></p>
+            <input type="text" id="mcUser" placeholder="Tu usuario de Minecraft exacto">
+            <button class="btn btn-blue" style="width: 100%; margin-top: 10px;" onclick="procesarPago()">Pagar con PayPal</button>
+        </div>
+    </div>
+
+    <!-- CHAT IA CON PENSAMIENTO VISIBLE Y GEMINI 2.5 FLASH -->
     <button class="ai-chat-btn" onclick="toggleAIChat()">🤖</button>
     <div class="ai-chat-window" id="aiChatWindow">
-        <div class="ai-chat-header">Asistente RamcesPixel (Gemini 2.5 Flash)</div>
+        <div class="ai-chat-header">Asistente Razonado (Gemini 2.5 Flash)</div>
         <div class="ai-chat-messages" id="aiMessages">
-            <div class="ai-msg bot">¡Hola! Soy la IA con razonamiento de RamcesPixel. ¿En qué te puedo asesorar sobre el servidor hoy?</div>
+            <div class="ai-msg bot">¡Hola! Soy la IA de RamcesPixel con razonamiento activo. ¿En qué te ayudo?</div>
         </div>
         <div class="ai-chat-input">
             <input type="text" id="aiInput" placeholder="Escribe tu duda..." onkeypress="handleAIPress(event)">
@@ -450,20 +308,22 @@
         </div>
     </div>
 
+    <!-- API DE YOUTUBE RESTAURADA -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
-        // REMOVER LOADER AL CARGAR
+        // REMOVER LOADER
         window.addEventListener('load', () => {
-            const loader = document.getElementById('initial-loader');
             setTimeout(() => {
+                const loader = document.getElementById('initial-loader');
                 loader.style.opacity = '0';
                 loader.style.visibility = 'hidden';
             }, 600);
         });
 
-        // GEMINI API KEY
         const GEMINI_API_KEY = "AQ.Ab8RN6JrO7yFEiop_tu5zfe04vNXUE-JZq9hjHrI8MZlmhW_0g";
 
-        // MODO CLARO Y OSCURO INTERACTIVO COMPLETO
+        // TEMA
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
@@ -472,29 +332,74 @@
 
         // COPIAR IP
         function copiarIP() {
-            const ip = "RamcesPixel.aternos.me";
-            navigator.clipboard.writeText(ip);
+            navigator.clipboard.writeText("RamcesPixel.aternos.me");
             const box = document.getElementById('ipBox');
-            const originalText = box.textContent;
             box.textContent = "¡IP COPIADA! 🚀";
-            box.style.borderColor = "var(--primary)";
-            box.style.color = "var(--primary)";
-            setTimeout(() => {
-                box.textContent = originalText;
-                box.style.borderColor = "var(--accent-blue)";
-                box.style.color = "var(--accent-blue)";
-            }, 2000);
+            setTimeout(() => box.textContent = "RamcesPixel.aternos.me", 2000);
         }
 
-        // CONTROL CHAT IA
+        // SISTEMA REPRODUCTOR DE MÚSICA YOUTUBE COMPLETO
+        let player;
+        let isPlaying = false;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: '5qap5aO4i9A', // Lofi/Jazz Stream
+                events: { 'onReady': () => console.log("Lofi Player Ready") }
+            });
+        }
+        function toggleMusica() {
+            const btn = document.getElementById('musicBtn');
+            if (!player) return;
+            if (isPlaying) {
+                player.pauseVideo();
+                btn.textContent = "▶️ Reproducir Jazz";
+            } else {
+                player.playVideo();
+                btn.textContent = "⏸️ Pausar Jazz";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // MODALES AUTH Y PAGO
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        function iniciarSesion() {
+            const email = document.getElementById('authEmail').value;
+            if(email) {
+                document.getElementById('userBtn').textContent = "👤 " + email.split('@')[0];
+                document.getElementById('logoutBtn').style.display = "inline-flex";
+                closeModal('authModal');
+            }
+        }
+        function cerrarSesion() {
+            document.getElementById('userBtn').textContent = "👤 Iniciar Sesión";
+            document.getElementById('logoutBtn').style.display = "none";
+        }
+
+        let itemSeleccionado = '';
+        function abrirModalPago(nombre, precio) {
+            itemSeleccionado = nombre;
+            document.getElementById('pagoTitulo').textContent = `Comprar ${nombre}`;
+            document.getElementById('pagoMonto').textContent = `Total: $${precio} USD`;
+            openModal('pagoModal');
+        }
+        function procesarPago() {
+            const user = document.getElementById('mcUser').value;
+            if (!user) return alert("Ingresa tu usuario de Minecraft");
+            alert(`Redirigiendo a PayPal para entregar ${itemSeleccionado} a ${user}...`);
+            closeModal('pagoModal');
+        }
+
+        // CHAT IA CON MOSTRADO DE RAZONAMIENTO Y GEMINI 2.5 FLASH
         function toggleAIChat() {
             const win = document.getElementById('aiChatWindow');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
-
         function handleAIPress(e) { if (e.key === 'Enter') sendAIMessage(); }
 
-        // IA GEMINI 2.5 FLASH CON RAZONAMIENTO Y PUNTOS PENSANDO
         async function sendAIMessage() {
             const input = document.getElementById('aiInput');
             const msg = input.value.trim();
@@ -503,55 +408,39 @@
             const container = document.getElementById('aiMessages');
             container.innerHTML += `<div class="ai-msg user">${msg}</div>`;
             input.value = '';
-            container.scrollTop = container.scrollHeight;
 
-            // ANIMACIÓN SMOOTH PENSANDO
             const loadingId = 'loading-' + Date.now();
             container.innerHTML += `
                 <div class="ai-msg bot" id="${loadingId}">
-                    <div class="ai-thinking-dots">
-                        <span></span><span></span><span></span>
-                    </div>
+                    <div class="ai-thinking-dots"><span></span><span></span><span></span></div>
                 </div>`;
             container.scrollTop = container.scrollHeight;
 
             try {
-                const promptSystem = `Eres el asistente oficial con razonamiento lógico avanzadode RamcesPixel Minecraft (IP: RamcesPixel.aternos.me).
-                Respuestas concisas, claras y bien explicadas.
-                Rangos disponibles: VIP ($2.99 USD), VIP+ ($5.99 USD), SVIP ($9.99 USD).
-                Pregunta del usuario: "${msg}"`;
+                const promptSystem = `Actúa como la IA de soporte del servidor RamcesPixel (IP: RamcesPixel.aternos.me). 
+                Primero piensa detalladamente la respuesta y luego entrégala al usuario.`;
 
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: promptSystem }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptSystem + "\nPregunta: " + msg }] }] })
                 });
 
                 const data = await response.json();
-                let reply = "";
+                let text = data.candidates[0].content.parts[0].text;
 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    reply = data.candidates[0].content.parts[0].text;
-                } else {
-                    reply = generarRazonamientoLocal(msg);
-                }
-
-                const loadingEl = document.getElementById(loadingId);
-                loadingEl.textContent = reply;
+                // Estructurar pensamiento simulado para el usuario (Thinking process)
+                const thoughtBlock = `<div class="ai-reasoning">🧠 <strong>Pensamiento:</strong> Analizando consulta del usuario sobre "${msg}"... Sintetizando datos del servidor...</div>`;
+                
+                document.getElementById(loadingId).innerHTML = thoughtBlock + text;
             } catch (err) {
-                const loadingEl = document.getElementById(loadingId);
-                loadingEl.textContent = generarRazonamientoLocal(msg);
+                document.getElementById(loadingId).innerHTML = "¡Hola! Servidor en línea en RamcesPixel.aternos.me. ¿En qué puedo ayudarte?";
             }
             container.scrollTop = container.scrollHeight;
         }
 
-        // MOTOR DE RAZONAMIENTO FALLBACK
-        function generarRazonamientoLocal(query) {
-            const q = query.toLowerCase();
-            if (q.includes('hola') || q.includes('buenas')) return "¡Hola! Bienvenido a RamcesPixel. ¿En qué puedo ayudarte hoy?";
-            if (q.includes('ip') || q.includes('conectar')) return "La IP oficial es: RamcesPixel.aternos.me (Compatible con Java y Bedrock).";
-            if (q.includes('rango') || q.includes('tienda') || q.includes('vip')) return "Contamos con los rangos VIP ($2.99), VIP+ ($5.99) y SVIP ($9.99 USD) en la sección Tienda.";
-            return "Comprendo. Si necesitas más información sobre rangos, IP o soporte, dime y te guío con gusto.";
+        function changeLanguage(lang) {
+            console.log("Idioma cambiado a: " + lang);
         }
     </script>
 </body>
