@@ -13,7 +13,7 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* TEMA OSCURO (Por defecto) */
+        /* TEMA OSCURO */
         body.dark-theme {
             background: radial-gradient(circle at center, #1a233a 0%, #090d16 100%);
             color: #ffffff;
@@ -183,7 +183,8 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
         }
-/* ANIMACIÓN Y ESTILOS DE MODALES */
+
+        /* MODALES Y ANIMACIONES SMOOTH */
         .modal {
             display: flex;
             position: fixed;
@@ -196,13 +197,13 @@
             align-items: center;
             z-index: 100;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
         .modal.active {
             opacity: 1;
-            visibility: visible;
+            pointer-events: auto;
         }
 
         .modal-content {
@@ -218,7 +219,6 @@
 
         .modal.active .modal-content {
             transform: scale(1);
-        }
         }
 
         .close-btn {
@@ -328,59 +328,7 @@
     </div>
 
     <script>
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        // CAMBIAR TEMA (Claro / Oscuro)
-        function toggleTheme() {
-            const body = document.body;
-            const btn = document.getElementById('btn-theme-toggle');
-            if (body.classList.contains('dark-theme')) {
-                body.classList.replace('dark-theme', 'light-theme');
-                btn.textContent = '☀️ Claro';
-            } else {
-                body.classList.replace('light-theme', 'dark-theme');
-                btn.textContent = '🌙 Oscuro';
-            }
-        }
-
-        // CAMBIAR IDIOMA (Español / Inglés)
-        let currentLang = 'es';
-        function toggleLanguage() {
-            const btnLang = document.getElementById('btn-lang-toggle');
-            if (currentLang === 'es') {
-                currentLang = 'en';
-                btnLang.textContent = '🇺🇸 English';
-                document.getElementById('txt-settings-btn').textContent = 'Settings';
-                document.getElementById('txt-sub').textContent = 'Made by Ramces Explota Baños';
-                document.getElementById('btn-discord').textContent = 'Join Discord';
-                document.getElementById('btn-shop').textContent = 'VIP Store';
-                document.getElementById('shop-title').textContent = '🛒 RamcesPixel VIP Store';
-                document.getElementById('shop-footer').textContent = 'Contact an Admin on Discord to complete your purchase.';
-                document.getElementById('settings-title').textContent = '⚙️ Settings';
-                document.getElementById('lbl-theme').textContent = 'Screen Theme:';
-                document.getElementById('lbl-lang').textContent = 'Language:';
-            } else {
-                currentLang = 'es';
-                btnLang.textContent = '🇲🇽 Español';
-                document.getElementById('txt-settings-btn').textContent = 'Ajustes';
-                document.getElementById('txt-sub').textContent = 'Hecho Por Ramces Explota Baños';
-                document.getElementById('btn-discord').textContent = 'Unirse al Discord';
-                document.getElementById('btn-shop').textContent = 'Tienda VIP';
-                document.getElementById('shop-title').textContent = '🛒 Tienda VIP RamcesPixel';
-                document.getElementById('shop-footer').textContent = 'Contacta con un Administrador en Discord para realizar tu compra.';
-                document.getElementById('settings-title').textContent = '⚙️ Configuración';
-                document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
-                document.getElementById('lbl-lang').textContent = 'Idioma:';
-            }
-        }
-<script>
-        // ABRIR Y CERRAR CON ANIMACIÓN SUAVE
+        // ABRIR Y CERRAR MODALES SUAVEMENTE
         function openModal(id) {
             document.getElementById(id).classList.add('active');
         }
@@ -389,7 +337,7 @@
             document.getElementById(id).classList.remove('active');
         }
 
-        // CERRAR AL HACER CLIC FUERA DE LA VENTANA
+        // CERRAR HACIENDO CLIC FUERA DE LA VENTANA
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('active');
@@ -438,7 +386,8 @@
                 document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
                 document.getElementById('lbl-lang').textContent = 'Idioma:';
             }
-        
+        }
+    </script>
 
 </body>
 </html>
