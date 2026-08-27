@@ -296,7 +296,7 @@
             bottom: 95px;
             right: 25px;
             width: 340px;
-            height: 430px;
+            height: 450px;
             border-radius: 14px;
             display: flex;
             flex-direction: column;
@@ -335,11 +335,11 @@
         }
 
         .msg {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 10px;
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
             font-size: 0.9rem;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
         .msg-user {
@@ -413,14 +413,14 @@
 
     <div id="aiChat" class="chat-window">
         <div class="chat-header">
-            <span>🤖 RamcesAI - Ayuda</span>
+            <span>🤖 RamcesAI - Asistente</span>
             <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
         </div>
         <div class="chat-messages" id="chatMsgs">
-            <div class="msg msg-bot">¡Hola! Soy RamcesAI 🤖. ¿Tienes alguna duda sobre la IP, versiones, rangos VIP o el Discord? ¡Pregúntame!</div>
+            <div class="msg msg-bot">¡Hola! Soy RamcesAI 👋. Estoy aquí para ayudarte con cualquier duda del servidor. Pregúntame sobre la IP, los rangos, las reglas o quién es el creador.</div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu duda aquí..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Pregúntame algo..." onkeypress="handleKeyPress(event)">
             <button class="chat-send" onclick="sendMsg()">Enviar</button>
         </div>
     </div>
@@ -554,7 +554,7 @@
 
             const msgs = document.getElementById('chatMsgs');
             
-            // Mensaje usuario
+            // Mensaje del usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg msg-user';
             userMsg.textContent = txt;
@@ -574,21 +574,58 @@
         }
 
         function getAIResponse(q) {
-            if (q.includes('ip') || q.includes('entrar') || q.includes('conectar') || q.includes('server')) {
-                return "La IP para conectarte a RamcesPixel es: RamcesPixelmc.aternos.me";
-            } else if (q.includes('discord') || q.includes('dc') || q.includes('comunidad')) {
-                return "Puedes unirte a nuestro Discord oficial usando el enlace: https://discord.gg/F5B5br4WH";
-            } else if (q.includes('vip') || q.includes('tienda') || q.includes('rango') || q.includes('comprar')) {
-                return "Contamos con rangos VIP ($2.99), VIP+ ($5.99) y MVP ($9.99). Haz clic en el botón 'Tienda VIP' para ver los beneficios.";
-            } else if (q.includes('version') || q.includes('versión')) {
-                return "RamcesPixel soporta la versión de Minecraft Java Edition más reciente. ¡Te recomendamos la 1.20 o superior!";
-            } else if (q.includes('regla') || q.includes('normas') || q.includes('ban')) {
-                return "Está prohibido el uso de hacks, insultar en el chat y el grfeo no permitido. ¡Trata a todos con respeto!";
-            } else if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
-                return "¡Hola! Bienvenid@ a RamcesPixel. ¿En qué te puedo ayudar hoy?";
-            } else {
-                return "No estoy seguro de esa respuesta específica, pero puedes hacer esa consulta a los Administradores en nuestro Discord: https://discord.gg/F5B5br4WH";
+            // DETECCIÓN DE INSULTOS Y RESPETO
+            if (q.includes('puto') || q.includes('pendejo') || q.includes('mierda') || q.includes('perra') || q.includes('verga') || q.includes('estupido') || q.includes('estúpido') || q.includes('idiota') || q.includes('cagon')) {
+                return "Oye, tranquilo amigo 🛑. En este servidor mantenemos el respeto entre los jugadores y la comunidad. ¡Por favor usa un lenguaje más educado para poder ayudarte!";
             }
+
+            // PREGUNTAS SOBRE EL CREADOR / OWNER
+            if (q.includes('creador') || q.includes('dueño') || q.includes('owner') || q.includes('hizo') || q.includes('creo') || q.includes('ramces')) {
+                return "El creador y desarrollador de este servidor es Ramces Explota Baños 👑. ¡Él se encarga de mantener todo en orden y genial!";
+            }
+
+            // QUÉ HAY EN EL SERVER / MODALIDAD
+            if (q.includes('que hay') || q.includes('qué hay') || q.includes('modalidad') || q.includes('de que trata') || q.includes('de qué trata') || q.includes('juegos') || q.includes('servidor')) {
+                return "¡RamcesPixel es un servidor increíble de Minecraft Java! Tenemos Survival activo, sistemas de rangos VIP, economías y una gran comunidad en Discord para jugar con amigos ⛏️⚔️.";
+            }
+
+            // IP O CÓMO ENTRAR
+            if (q.includes('ip') || q.includes('entrar') || q.includes('conectar') || q.includes('jugar') || q.includes('server')) {
+                return "Para entrar a jugar solo abre Minecraft Java y añade esta IP: RamcesPixelmc.aternos.me 🚀";
+            }
+
+            // DISCORD
+            if (q.includes('discord') || q.includes('dc') || q.includes('comunidad') || q.includes('grupo') || q.includes('chat')) {
+                return "¡Claro! Te esperamos en nuestro Discord oficial para chatear y enterarte de eventos. Entra aquí: https://discord.gg/F5B5br4WH 💬";
+            }
+
+            // TIENDA / VIP
+            if (q.includes('vip') || q.includes('tienda') || q.includes('rango') || q.includes('comprar') || q.includes('paga')) {
+                return "Tenemos tres rangos VIP geniales: VIP ($2.99), VIP+ ($5.99) y MVP ($9.99). Haz clic en el botón 'Tienda VIP' para ver sus beneficios o habla con un Admin en Discord 🛒.";
+            }
+
+            // VERSIÓN
+            if (q.includes('version') || q.includes('versión') || q.includes('java') || q.includes('bedrock')) {
+                return "El servidor está configurado para Minecraft Java Edition en versiones recientes (1.20+ recomendada) 🎮.";
+            }
+
+            // REGLAS
+            if (q.includes('regla') || q.includes('normas') || q.includes('ban') || q.includes('prohibido') || q.includes('hacks')) {
+                return "Las reglas principales son: 1) Nada de hacks o clientes ilegales, 2) Respetar a todos los jugadores y staff, 3) No hacer spam ni insultar. ¡Evita sanciones! 📜";
+            }
+
+            // SALUDOS
+            if (q.includes('hola') || q.includes('buenas') || q.includes('hey') || q.includes('que tal') || q.includes('qué tal') || q.includes('buenos dias') || q.includes('buenas tardes')) {
+                return "¡Hola! Qué gusto saludarte. ¿Cómo te puedo ayudar hoy con el servidor RamcesPixel? 😊";
+            }
+
+            // AGRADECIMIENTOS
+            if (q.includes('gracias') || q.includes('ty') || q.includes('thanks') || q.includes('chido') || q.includes('buena onda')) {
+                return "¡De nada! Aquí estoy para lo que necesites. ¡Nos vemos dentro del servidor! 🎮🔥";
+            }
+
+            // RESPUESTA GENERAL
+            return "Interesante pregunta 🤔. No tengo el dato exacto sobre eso en este momento, pero puedes preguntarle a Ramces o a un Administrador en nuestro Discord oficial: https://discord.gg/F5B5br4WH";
         }
     </script>
 
