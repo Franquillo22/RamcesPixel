@@ -838,7 +838,7 @@
             }
         }
 
-        // --- CONEXIÓN DE IA CON GEMINI (ACTUALIZADO A 2.5-FLASH) ---
+        // --- CONEXIÓN DE IA CON GEMINI (ACTUALIZADO A 3.6-FLASH) ---
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -901,7 +901,7 @@
                 ? "Eres RamcesAI, la inteligencia artificial del servidor de Minecraft RamcesPixel. Tu objetivo es responder con lógica, profundidad y análisis a cualquier tema que plantee el usuario (incluso fuera del servidor). Siempre analiza el contexto y termina tu mensaje realizando una pregunta interesante para continuar la conversación."
                 : "Eres RamcesAI del servidor RamcesPixel. Responde de forma breve, concisa y amistosa, añadiendo una pequeña pregunta al final.";
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${API_KEY}`;
 
             const body = {
                 contents: [
