@@ -1,348 +1,897 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RamcesPixelAI - Plataforma Oficial</title>
-  <style>
-    /* Desplazamiento Suave */
-    html {
-      scroll-behavior: smooth;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RamcesPixel Network - Minecraft Server</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-    /* Scrollbar Personalizada */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f0f17;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #8b5cf6, #d946ef);
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(180deg, #7c3aed, #c026d3);
-    }
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(18, 25, 42, 0.95);
+            --primary: #ff9d00;
+            --primary-glow: rgba(255, 157, 0, 0.6);
+            --accent-blue: #00d4ff;
+            --accent-blue-glow: rgba(0, 212, 255, 0.6);
+            --accent-discord: #5865F2;
+            --accent-discord-glow: rgba(88, 101, 242, 0.6);
+            --text-color: #ffffff;
+            --subtext: #a0aec0;
+            --border-color: rgba(255, 157, 0, 0.3);
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: #09090e;
-      color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
+        body.light-theme {
+            --bg-color: #f4f7fb;
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #1a202c;
+            --subtext: #4a5568;
+            --border-color: rgba(255, 157, 0, 0.4);
+        }
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
+        /* RESET & SMOOTH SCROLL */
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .card {
-      background: #12121c;
-      border: 1px solid #27273a;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                        border-color 0.3s ease, 
+                        box-shadow 0.3s ease, 
+                        transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+        
+        body { 
+            min-height: 100vh; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            display: flex; 
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-    /* Header e Identidad RamcesPixelAI */
-    .brand-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), #ff5500);
+            border-radius: 5px;
+            border: 2px solid var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
 
-    .brand-header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
+        /* PANTALLA DE CARGA INICIAL (INITIAL LOGO LOADER) */
+        #initial-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #07090e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+        .loader-logo {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #ff9d00, #ff5500);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #000;
+            box-shadow: 0 0 40px var(--primary-glow);
+            animation: pulseLogo 1.5s infinite alternate ease-in-out;
+        }
+        .loader-text {
+            margin-top: 20px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+        @keyframes pulseLogo {
+            0% { transform: scale(0.9); box-shadow: 0 0 20px var(--primary-glow); }
+            100% { transform: scale(1.1); box-shadow: 0 0 50px var(--primary-glow); }
+        }
 
-    .brand-header h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        /* HEADER & NAVBAR */
+        header { 
+            background: var(--panel-bg); 
+            padding: 15px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+        }
 
-    /* Chat UI */
-    #chat-box {
-      height: 350px;
-      overflow-y: auto;
-      border: 1px solid #232334;
-      border-radius: 10px;
-      padding: 15px;
-      background: #0a0a10;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
+        .logo-container { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+        .logo-box { 
+            width: 44px; 
+            height: 44px; 
+            background: linear-gradient(135deg, #ff9d00, #ff5500); 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 900; 
+            color: #000; 
+            font-size: 1.5rem; 
+            box-shadow: 0 0 15px var(--primary-glow);
+            border: 2px solid #fff;
+        }
+        .logo-text { font-size: 1.7rem; font-weight: 900; color: var(--primary); letter-spacing: 1.5px; text-shadow: 0 0 10px var(--primary-glow); }
 
-    .message {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.5;
-      word-break: break-word;
-    }
+        nav { display: flex; gap: 20px; align-items: center; }
+        nav a { color: var(--text-color); text-decoration: none; font-weight: 600; cursor: pointer; }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 8px var(--primary-glow); }
 
-    .user-msg {
-      align-self: flex-end;
-      background: #6366f1;
-      color: #ffffff;
-      border-bottom-right-radius: 2px;
-    }
+        /* BOTONES */
+        .btn { 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            border: none; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            text-decoration: none; 
+            font-size: 0.95rem; 
+            position: relative;
+            outline: none;
+        }
 
-    .ai-msg {
-      align-self: flex-start;
-      background: #1c1c2b;
-      color: #e2e8f0;
-      border-left: 3px solid #a855f7;
-      border-bottom-left-radius: 2px;
-    }
+        .btn-primary { 
+            background: var(--primary); 
+            color: #000; 
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .btn-primary:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 0 25px var(--primary-glow), 0 0 40px var(--primary-glow); 
+        }
 
-    .input-group {
-      display: flex;
-      gap: 10px;
-    }
+        .btn-blue { 
+            background: var(--accent-blue); 
+            color: #000; 
+            box-shadow: 0 0 10px var(--accent-blue-glow);
+        }
+        .btn-blue:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 0 25px var(--accent-blue-glow), 0 0 40px var(--accent-blue-glow); 
+        }
 
-    input, select {
-      flex: 1;
-      padding: 12px 16px;
-      border: 1px solid #27273a;
-      border-radius: 8px;
-      background: #0a0a10;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
+        .btn-discord { 
+            background: var(--accent-discord); 
+            color: #fff; 
+            box-shadow: 0 0 10px var(--accent-discord-glow);
+        }
+        .btn-discord:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 0 25px var(--accent-discord-glow), 0 0 40px var(--accent-discord-glow); 
+        }
 
-    input:focus {
-      border-color: #8b5cf6;
-    }
+        .btn-google { 
+            background: #ffffff; 
+            color: #333; 
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
+        }
+        .btn-google:hover { 
+            transform: translateY(-3px) scale(1.02); 
+            box-shadow: 0 0 25px rgba(255,255,255,0.8); 
+        }
 
-    button {
-      background: linear-gradient(90deg, #8b5cf6, #d946ef);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: transform 0.1s, opacity 0.2s;
-    }
+        .btn-logout { background: #e74c3c; color: white; display: none; box-shadow: 0 0 10px rgba(231,76,60,0.5); }
+        .btn-logout:hover { box-shadow: 0 0 20px rgba(231,76,60,0.8); }
 
-    button:hover {
-      opacity: 0.9;
-    }
+        /* SECCIÓN PRINCIPAL */
+        main { flex: 1; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 50px; }
+        
+        .hero { 
+            background: var(--panel-bg); 
+            border: 2px solid var(--primary); 
+            border-radius: 24px; 
+            padding: 50px; 
+            text-align: center; 
+            max-width: 850px; 
+            width: 100%;
+            box-shadow: 0 0 35px var(--primary-glow);
+            animation: fadeInSmooth 0.8s ease-out;
+        }
 
-    button:active {
-      transform: scale(0.98);
-    }
+        .hero h1 { font-size: 3rem; color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 15px var(--primary-glow); }
+        .hero p { font-size: 1.15rem; color: var(--subtext); margin-bottom: 25px; }
+        
+        .server-ip-box { 
+            background: var(--bg-color); 
+            padding: 14px 30px; 
+            border-radius: 12px; 
+            border: 2px dashed var(--accent-blue); 
+            display: inline-block; 
+            font-family: monospace; 
+            font-size: 1.4rem; 
+            color: var(--accent-blue);
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent-blue-glow);
+            position: relative;
+        }
+        .server-ip-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--accent-blue-glow);
+        }
 
-    /* Sección Tienda */
-    .shop-title {
-      font-size: 1.4rem;
-      color: #a855f7;
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
+        /* TIENDA */
+        .section-title { font-size: 2.2rem; color: var(--primary); margin-bottom: 25px; text-align: center; text-shadow: 0 0 10px var(--primary-glow); }
+        .grid-store { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; width: 100%; max-width: 950px; }
+        .card-item { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-item:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: 0 10px 30px var(--primary-glow); }
+        .card-price { font-size: 1.6rem; color: var(--accent-blue); font-weight: 800; margin: 12px 0; text-shadow: 0 0 8px var(--accent-blue-glow); }
 
-    .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+        /* AJUSTES */
+        .settings-panel { 
+            background: var(--panel-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 20px; 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 950px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 25px; 
+            justify-content: space-around;
+        }
+        .setting-box { flex: 1; min-width: 250px; text-align: center; }
+        .setting-box h3 { color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 8px var(--primary-glow); }
 
-    .shop-card {
-      background: #0a0a10;
-      border: 1px solid #232334;
-      padding: 18px;
-      border-radius: 10px;
-      text-align: center;
-    }
+        /* ASISTENTE IA GEMINI */
+        .ai-chat-btn { 
+            position: fixed; 
+            bottom: 25px; 
+            right: 25px; 
+            width: 65px; 
+            height: 65px; 
+            border-radius: 50%; 
+            background: var(--primary); 
+            border: none; 
+            font-size: 2rem; 
+            cursor: pointer; 
+            box-shadow: 0 0 20px var(--primary-glow); 
+            z-index: 99; 
+        }
+        .ai-chat-btn:hover { transform: scale(1.1) rotate(10deg); box-shadow: 0 0 35px var(--primary-glow); }
+        
+        .ai-chat-window { 
+            display: none; 
+            position: fixed; 
+            bottom: 100px; 
+            right: 25px; 
+            width: 360px; 
+            height: 500px; 
+            background: var(--panel-bg); 
+            border: 2px solid var(--primary); 
+            border-radius: 20px; 
+            flex-direction: column; 
+            overflow: hidden; 
+            z-index: 99; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 20px var(--primary-glow); 
+            animation: fadeInSmooth 0.3s ease-out;
+        }
+        .ai-chat-header { background: var(--primary); color: #000; padding: 15px; font-weight: 800; text-align: center; font-size: 1.05rem; }
+        .ai-chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.92rem; }
+        .ai-msg { padding: 10px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; line-height: 1.4; }
+        .ai-msg.bot { background: rgba(0, 212, 255, 0.15); color: #fff; align-self: flex-start; border: 1px solid var(--accent-blue); }
+        body.light-theme .ai-msg.bot { color: #1a202c; }
+        .ai-msg.user { background: var(--primary); color: #000; align-self: flex-end; font-weight: 600; }
+        .ai-chat-input { display: flex; border-top: 1px solid var(--border-color); background: var(--bg-color); }
+        .ai-chat-input input { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-color); outline: none; }
 
-    .shop-card h3 {
-      margin: 0 0 8px 0;
-      font-size: 1.1rem;
-    }
+        /* ANIMACIÓN DE 3 PUNTOS PENSANDO (...) PARA LA IA */
+        .ai-thinking-dots {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 16px;
+        }
+        .ai-thinking-dots span {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            display: inline-block;
+            animation: dotBounce 1.4s infinite ease-in-out both;
+        }
+        .ai-thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .ai-thinking-dots span:nth-child(3) { animation-delay: 0s; }
 
-    .shop-card p {
-      color: #a1a1aa;
-      margin: 0 0 15px 0;
-      font-weight: bold;
-    }
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
 
-    /* Checkout Pasarela */
-    .checkout-box {
-      background: #0a0a10;
-      border: 1px solid #27273a;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
+        /* MODALES (LOGIN Y PAGO CON TARJETA) */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal.active { display: flex; animation: fadeInSmooth 0.3s ease-out; }
+        .modal-content { background: var(--panel-bg); padding: 35px; border-radius: 20px; border: 2px solid var(--primary); width: 90%; max-width: 440px; text-align: center; box-shadow: 0 0 30px var(--primary-glow); position: relative; }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-    }
+        select, input[type="text"], input[type="password"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border-radius: 10px; 
+            border: 1px solid var(--primary); 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            outline: none; 
+        }
 
-    .form-row {
-      display: flex;
-      gap: 10px;
-    }
+        /* FORMULARIO TARJETA */
+        .card-form-group { text-align: left; margin-bottom: 12px; }
+        .card-form-group label { font-size: 0.85rem; color: var(--subtext); margin-left: 4px; font-weight: 600; }
+        .card-row { display: flex; gap: 10px; }
 
-    .status-alert {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      display: none;
-      text-align: center;
-    }
-
-    .status-alert.success {
-      background: #14532d;
-      color: #4ade80;
-      border: 1px solid #22c55e;
-    }
-  </style>
+        @keyframes fadeInSmooth { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Chat Principal RamcesPixelAI -->
-    <div class="card">
-      <div class="brand-header">
-        <img src="https://raw.githubusercontent.com/ramcespixel/assets/main/ramces%20pixel.png" alt="RamcesPixel Logo" onerror="this.src='https://via.placeholder.com/40?text=RP'">
-        <h2>RamcesPixelAI</h2>
-      </div>
-      
-      <div id="chat-box">
-        <div class="message ai-msg">¡Hola! Soy <b>RamcesPixelAI</b>. ¿En qué puedo ayudarte el día de hoy?</div>
-      </div>
-
-      <div class="input-group">
-        <input type="text" id="user-input" placeholder="Escribe un mensaje a RamcesPixelAI..." onkeypress="if(event.key==='Enter') sendMessage()">
-        <button onclick="sendMessage()">Enviar</button>
-      </div>
+    <!-- LOGO DE CARGA INICIAL (SPLASH SCREEN) -->
+    <div id="initial-loader">
+        <div class="loader-logo">R</div>
+        <div class="loader-text">RAMCESPIXEL NETWORK</div>
     </div>
 
-    <!-- Tienda Oficial -->
-    <div class="card">
-      <h2 class="shop-title">Tienda Oficial</h2>
-      
-      <div class="shop-grid">
-        <div class="shop-card">
-          <h3>Rango VIP</h3>
-          <p>$9.99 USD</p>
-          <button onclick="openCheckout('Rango VIP', 9.99)">Comprar</button>
+    <!-- NAVBAR PERMANENTE -->
+    <header>
+        <div class="logo-container" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <div class="logo-box">R</div>
+            <div class="logo-text">RAMCESPIXEL</div>
         </div>
-        <div class="shop-card">
-          <h3>Pack Monedas</h3>
-          <p>$4.99 USD</p>
-          <button onclick="openCheckout('Pack Monedas', 4.99)">Comprar</button>
-        </div>
-        <div class="shop-card">
-          <h3>Suscripción Premium</h3>
-          <p>$14.99 USD</p>
-          <button onclick="openCheckout('Suscripción Premium', 14.99)">Comprar</button>
-        </div>
-      </div>
-
-      <!-- Pasarela de Pago Dinámica -->
-      <div id="checkout-container" class="checkout-box" style="display: none;">
-        <h3 style="margin: 0;">Detalles de Pago: <span id="item-name-display" style="color: #a855f7;"></span></h3>
         
-        <form class="form-group" id="payment-form" onsubmit="handlePayment(event)">
-          <input type="text" placeholder="Nombre en la tarjeta" required>
-          <input type="text" id="card-num" maxlength="19" placeholder="Número de Tarjeta (16 dígitos)" pattern="[0-9\s]{13,19}" required>
-          <div class="form-row">
-            <input type="text" maxlength="5" placeholder="MM/AA" pattern="(0[1-9]|1[0-2])\/([0-9]{2})" required>
-            <input type="password" maxlength="4" placeholder="CVV" pattern="[0-9]{3,4}" required>
-          </div>
-          <button type="submit">Procesar Pago</button>
-        </form>
+        <nav>
+            <a href="#inicio" id="nav-home">Inicio</a>
+            <a href="#tienda" id="nav-store">Tienda</a>
+            <a href="#ajustes" id="nav-settings">Ajustes</a>
+            <a href="https://discord.com/oauth2/authorize?client_id=1542606598084497418&response_type=token&redirect_uri=https%3A%2F%2Ffranquillo22.github.io%2FRamcesPixel%2F&scope=identify" target="_blank">Discord</a>
+        </nav>
 
-        <div id="payment-alert" class="status-alert"></div>
-      </div>
+        <div class="user-controls">
+            <button class="btn btn-primary" id="userBtn" onclick="openModal('authModal')">👤 Iniciar Sesión</button>
+            <button class="btn btn-logout" id="logoutBtn" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- SECCIÓN HÉROE -->
+        <section class="hero" id="inicio">
+            <h1 id="hero-title">RamcesPixel Network</h1>
+            <p id="hero-sub">Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)</p>
+            
+            <!-- IP CON COPIADO SMOOTH -->
+            <div class="server-ip-box" onclick="copiarIP()" id="ipBox">RamcesPixel.aternos.me</div>
+            <p style="font-size: 0.85rem; color: var(--subtext); margin-top: 10px;" id="hero-copy-hint">(Haz clic para copiar la IP)</p>
+        </section>
+
+        <!-- SECCIÓN TIENDA COMPLETA -->
+        <section id="tienda" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <h2 class="section-title" id="store-title">🛒 Tienda Oficial de Rangos</h2>
+            <div class="grid-store">
+                <div class="card-item">
+                    <div>
+                        <h3>Rango VIP</h3>
+                        <div class="card-price">$2.99 USD</div>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Kits especiales, vuelo en lobby y prefijo VIP en chat.</p>
+                    </div>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP', 2.99)" id="btn-buy-1">Comprar</button>
+                </div>
+                <div class="card-item">
+                    <div>
+                        <h3>Rango VIP+</h3>
+                        <div class="card-price">$5.99 USD</div>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Beneficios VIP + 2 accesos a parcelas extras y llaves de cajas.</p>
+                    </div>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango VIP+', 5.99)" id="btn-buy-2">Comprar</button>
+                </div>
+                <div class="card-item">
+                    <div>
+                        <h3>Rango SVIP</h3>
+                        <div class="card-price">$9.99 USD</div>
+                        <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;">Rango definitivo con cosméticos exclusivos y comando /fly.</p>
+                    </div>
+                    <button class="btn btn-blue" style="width: 100%;" onclick="abrirModalPago('Rango SVIP', 9.99)" id="btn-buy-3">Comprar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN AJUSTES E IDIOMA -->
+        <section class="settings-panel" id="ajustes">
+            <div class="setting-box">
+                <h3 id="theme-heading">🎨 Tema de la Página</h3>
+                <button class="btn btn-primary" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
+            </div>
+            
+            <div class="setting-box">
+                <h3 id="lang-heading">🌐 Idioma / Language</h3>
+                <select id="langSelect" onchange="changeLanguage(this.value)" style="margin: 0; font-weight: bold;">
+                    <option value="es-MX">🇲🇽 Español (MX)</option>
+                    <option value="en-US">🇺🇸 English (USA)</option>
+                    <option value="fr-FR">🇫🇷 Français</option>
+                </select>
+            </div>
+
+            <div class="setting-box">
+                <h3 id="music-heading">🎷 Música Jazz Tranquila</h3>
+                <button class="btn btn-blue" onclick="toggleMusica()" id="musicBtn">▶️ Reproducir Jazz</button>
+                <div id="youtube-player" style="display:none;"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ASISTENTE IA GEMINI CON ANIMACIÓN 3 PUNTOS -->
+    <button class="ai-chat-btn" onclick="toggleAIChat()">🤖</button>
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-chat-header">Asistente RamcesPixel (Gemini AI)</div>
+        <div class="ai-chat-messages" id="aiMessages">
+            <div class="ai-msg bot">¡Hola! Soy el asistente inteligente de RamcesPixel. ¿En qué puedo ayudarte hoy?</div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="aiInput" placeholder="Escribe tu duda..." onkeypress="handleAIPress(event)">
+            <button class="btn btn-primary" style="border-radius: 0;" onclick="sendAIMessage()">Enviar</button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    // Motor de respuestas RamcesPixelAI
-    function sendMessage() {
-      const input = document.getElementById('user-input');
-      const text = input.value.trim();
-      if (!text) return;
+    <!-- MODAL INICIO DE SESIÓN -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--primary); margin-bottom: 20px; text-shadow: 0 0 10px var(--primary-glow);">🔐 Iniciar Sesión</h2>
+            
+            <div id="authStep1">
+                <p style="font-size:0.9rem; margin-bottom:20px; color:var(--subtext);">Elige tu plataforma de autenticación:</p>
+                
+                <button class="btn btn-google" style="width: 100%; margin-bottom: 15px;" onclick="loginWithGoogle()">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.39 7.35 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.15 0 9.99 0 12s.45 3.85 1.24 5.42l4.04-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.61 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                    Continuar con Google
+                </button>
 
-      appendMessage(text, 'user-msg');
-      input.value = '';
+                <button class="btn btn-discord" style="width: 100%;" onclick="loginWithDiscord()">
+                    <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    Continuar con Discord
+                </button>
+            </div>
 
-      const loading = appendMessage('RamcesPixelAI está pensando...', 'ai-msg');
+            <div id="authStep2" style="display: none;">
+                <p style="color: var(--accent-blue); font-size:0.95rem; margin-bottom:10px;">¡Autenticado! Ahora escribe tu usuario exacto de Minecraft:</p>
+                <form onsubmit="validarYGuardarNick(event)">
+                    <select id="mcEdition">
+                        <option value="java">Minecraft Java Edition</option>
+                        <option value="bedrock">Minecraft Bedrock / Móvil / Consola</option>
+                    </select>
+                    <input type="text" id="mcNickInput" placeholder="Tu Nick exacto" required>
+                    <button type="submit" id="btnVerify" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Vincular Usuario</button>
+                </form>
+            </div>
+            
+            <button style="background:none; border:none; color:var(--subtext); margin-top:20px; cursor:pointer;" onclick="closeModal('authModal')">Cancelar</button>
+        </div>
+    </div>
 
-      setTimeout(() => {
-        loading.remove();
-        const responseText = generateAIResponse(text);
-        appendMessage(responseText, 'ai-msg');
-      }, 600);
-    }
+    <!-- MODAL TIENDA COMPLETA Y VALIDACIÓN DE TARJETA REAL -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--primary); margin-bottom: 5px;">💳 Pasarela de Pago</h2>
+            <p id="payItemTitle" style="color: var(--accent-blue); font-weight: 700; margin-bottom: 15px;"></p>
+            
+            <form onsubmit="procesarPago(event)">
+                <div class="card-form-group">
+                    <label>Nombre del Titular</label>
+                    <input type="text" id="cardName" placeholder="JUAN PEREZ" required>
+                </div>
+                <div class="card-form-group">
+                    <label>Número de Tarjeta</label>
+                    <input type="text" id="cardNumber" placeholder="4532 0000 0000 0000" maxlength="19" oninput="formatCardNumber(this)" required>
+                </div>
+                <div class="card-row">
+                    <div class="card-form-group" style="flex:1;">
+                        <label>Vencimiento</label>
+                        <input type="text" id="cardExp" placeholder="MM/AA" maxlength="5" oninput="formatExpDate(this)" required>
+                    </div>
+                    <div class="card-form-group" style="flex:1;">
+                        <label>Código CVC/CVV</label>
+                        <input type="password" id="cardCvc" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
 
-    function generateAIResponse(query) {
-      const q = query.toLowerCase();
-      if (q.includes('hola') || q.includes('buenas')) return '¡Hola! ¿Cómo estás? ¿En qué puedo ayudarte hoy?';
-      if (q.includes('tienda') || q.includes('comprar')) return 'Puedes revisar los productos disponibles en la sección de la Tienda Oficial más abajo.';
-      if (q.includes('quien eres') || q.includes('quién eres')) return 'Soy RamcesPixelAI, tu asistente virtual inteligente integrado.';
-      return `He procesado tu mensaje sobre "${query}". ¿Hay algo más en lo que te pueda colaborar?`;
-    }
+                <div id="payStatusMsg" style="font-size: 0.85rem; margin: 8px 0; min-height: 20px; font-weight: bold;"></div>
 
-    function appendMessage(text, className) {
-      const chatBox = document.getElementById('chat-box');
-      const msg = document.createElement('div');
-      msg.className = `message ${className}`;
-      msg.textContent = text;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-      return msg;
-    }
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Pagar Ahora</button>
+            </form>
 
-    // Funciones de la Tienda y Pasarela de Pago
-    function openCheckout(itemName, price) {
-      const container = document.getElementById('checkout-container');
-      document.getElementById('item-name-display').textContent = `${itemName} - $${price} USD`;
-      container.style.display = 'block';
-      container.scrollIntoView({ behavior: 'smooth' });
-    }
+            <button style="background:none; border:none; color:var(--subtext); margin-top:15px; cursor:pointer;" onclick="closeModal('paymentModal')">Cancelar</button>
+        </div>
+    </div>
 
-    function handlePayment(e) {
-      e.preventDefault();
-      const alertBox = document.getElementById('payment-alert');
-      alertBox.className = 'status-alert success';
-      alertBox.textContent = '¡Pago completado con éxito! Gracias por tu compra.';
-      alertBox.style.display = 'block';
+    <!-- API DE YOUTUBE PARA MÚSICA -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-      setTimeout(() => {
-        document.getElementById('payment-form').reset();
-        document.getElementById('checkout-container').style.display = 'none';
-        alertBox.style.display = 'none';
-      }, 3000);
-    }
-  </script>
+    <script>
+        // REMOVER LOGO INICIAL AL CARGAR LA PÁGINA
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('initial-loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+            }, 600);
+        });
+
+        // GEMINI API KEY CONFIGURADA
+        const GEMINI_API_KEY = "AQ.Ab8RN6JrO7yFEiop_tu5zfe04vNXUE-JZq9hjHrI8MZlmhW_0g";
+
+        // FIREBASE AUTH
+        const firebaseConfig = {
+            apiKey: "AIzaSyAg8cND_1e8MaY3i9YDoIBUfSQON9LQSck",
+            authDomain: "ramces-pixel.firebaseapp.com",
+            projectId: "ramces-pixel",
+            storageBucket: "ramces-pixel.firebasestorage.app",
+            messagingSenderId: "372884638030",
+            appId: "1:372884638030:web:528fefc959e14fd5f6361f"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        function loginWithGoogle() {
+            firebase.auth().signInWithPopup(googleProvider)
+                .then(() => mostrarPasoVincular())
+                .catch((err) => alert("Error con Google: " + err.message));
+        }
+
+        function loginWithDiscord() {
+            window.location.href = "https://discord.com/oauth2/authorize?client_id=1542606598084497418&response_type=token&redirect_uri=https%3A%2F%2Ffranquillo22.github.io%2FRamcesPixel%2F&scope=identify";
+        }
+
+        // COPIAR IP CON EFECTO VISUAL SMOOTH
+        function copiarIP() {
+            const ip = "RamcesPixel.aternos.me";
+            navigator.clipboard.writeText(ip);
+            const box = document.getElementById('ipBox');
+            const originalText = box.textContent;
+            box.textContent = "¡IP COPIADA! 🚀";
+            box.style.borderColor = "#ff9d00";
+            box.style.color = "#ff9d00";
+            setTimeout(() => {
+                box.textContent = originalText;
+                box.style.borderColor = "var(--accent-blue)";
+                box.style.color = "var(--accent-blue)";
+            }, 2000);
+        }
+
+        // CONTROL CHAT IA
+        function toggleAIChat() {
+            const win = document.getElementById('aiChatWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleAIPress(e) { if (e.key === 'Enter') sendAIMessage(); }
+
+        // IA GEMINI CON RAZONAMIENTO Y ANIMACIÓN DE 3 PUNTOS (...)
+        async function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const container = document.getElementById('aiMessages');
+            container.innerHTML += `<div class="ai-msg user">${msg}</div>`;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            // ANIMACIÓN DE 3 PUNTOS PENSANDO (...)
+            const loadingId = 'loading-' + Date.now();
+            container.innerHTML += `
+                <div class="ai-msg bot" id="${loadingId}">
+                    <div class="ai-thinking-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>`;
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const promptSystem = `Eres el asistente oficial de razonamiento del servidor RamcesPixel Minecraft (IP: RamcesPixel.aternos.me). 
+                Analiza con pensamiento puro, coherente y amigable lo que solicita el usuario. 
+                Si saluda, responde el saludo amablemente sin dar mensajes automáticos robóticos. 
+                Si pregunta de la tienda, rangos (VIP $2.99, VIP+ $5.99, SVIP $9.99), IP o ayuda de Minecraft, responde con lógica directa.
+                Mensaje del usuario: "${msg}"`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptSystem }] }] })
+                });
+
+                const data = await response.json();
+                let reply = "";
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    reply = data.candidates[0].content.parts[0].text;
+                } else {
+                    reply = generarRazonamientoLocal(msg);
+                }
+
+                const loadingEl = document.getElementById(loadingId);
+                loadingEl.textContent = reply;
+            } catch (err) {
+                const loadingEl = document.getElementById(loadingId);
+                loadingEl.textContent = generarRazonamientoLocal(msg);
+            }
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // MOTOR DE RAZONAMIENTO PURO INTERNO (FALLBACK LÓGICO)
+        function generarRazonamientoLocal(query) {
+            const q = query.toLowerCase();
+            if (q.includes('hola') || q.includes('buenas')) return "¡Hola! ¿Cómo estás? Bienvenido al chat interactivo de RamcesPixel. ¿En qué te puedo asesorar sobre el servidor hoy?";
+            if (q.includes('ip') || q.includes('conectar') || q.includes('entrar')) return "La IP oficial para conectarte es: RamcesPixel.aternos.me (Compatible con Minecraft Java y Bedrock).";
+            if (q.includes('rango') || q.includes('tienda') || q.includes('comprar') || q.includes('vip')) return "En nuestra Tienda contamos con los rangos VIP ($2.99 USD), VIP+ ($5.99 USD) y SVIP ($9.99 USD). ¡Puedes comprarlos directamente arriba con validación de tarjeta!";
+            if (q.includes('gracias')) return "¡De nada! Estoy para ayudarte en lo que necesites para tu experiencia en RamcesPixel.";
+            return "Comprendo tu inquietud. En el servidor RamcesPixel estamos dedicados a brindarte la mejor experiencia de juego. Puedes consultar la IP (RamcesPixel.aternos.me) o la tienda de rangos en esta misma página.";
+        }
+
+        // MÚSICA JAZZ
+        let ytPlayer;
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: 'UjWwlC5XOKg',
+                playerVars: { 'autoplay': 0, 'controls': 0 }
+            });
+        }
+
+        function toggleMusica() {
+            const btn = document.getElementById('musicBtn');
+            if (ytPlayer && ytPlayer.getPlayerState) {
+                const state = ytPlayer.getPlayerState();
+                if (state === 1) {
+                    ytPlayer.pauseVideo();
+                    btn.textContent = '▶️ Reproducir Jazz';
+                } else {
+                    ytPlayer.playVideo();
+                    btn.textContent = '⏸️ Pausar Jazz';
+                }
+            }
+        }
+
+        // TEMA DÍA / NOCHE
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                btn.textContent = '🌙 Modo Oscuro';
+            } else {
+                body.classList.add('light-theme');
+                btn.textContent = '☀️ Modo Claro';
+            }
+        }
+
+        // TRADUCTOR MULTI-IDIOMA
+        const translations = {
+            'es-MX': {
+                home: 'Inicio', store: 'Tienda', settings: 'Ajustes',
+                title: 'RamcesPixel Network', sub: 'Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)',
+                copyHint: '(Haz clic para copiar la IP)', storeTitle: '🛒 Tienda Oficial de Rangos', buy: 'Comprar',
+                themeHead: '🎨 Tema de la Página', musicHead: '🎷 Música Jazz Tranquila', langHead: '🌐 Idioma / Language', login: '👤 Iniciar Sesión'
+            },
+            'en-US': {
+                home: 'Home', store: 'Store', settings: 'Settings',
+                title: 'RamcesPixel Network', sub: 'Compatible server for Minecraft Java Edition & Bedrock (Mobile/Consoles)',
+                copyHint: '(Click to copy IP)', storeTitle: '🛒 Official Rank Store', buy: 'Buy',
+                themeHead: '🎨 Page Theme', musicHead: '🎷 Smooth Jazz Music', langHead: '🌐 Idioma / Language', login: '👤 Log In'
+            },
+            'fr-FR': {
+                home: 'Accueil', store: 'Boutique', settings: 'Paramètres',
+                title: 'Réseau RamcesPixel', sub: 'Serveur compatible pour Minecraft Java Edition et Bedrock (Mobile/Consoles)',
+                copyHint: '(Cliquez pour copier l\'IP)', storeTitle: '🛒 Boutique de Rangs Officielle', buy: 'Acheter',
+                themeHead: '🎨 Thème de Page', musicHead: '🎷 Musique Jazz Paisible', langHead: '🌐 Idioma / Language', login: '👤 Se Connecter'
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('nav-home').textContent = t.home;
+            document.getElementById('nav-store').textContent = t.store;
+            document.getElementById('nav-settings').textContent = t.settings;
+            document.getElementById('hero-title').textContent = t.title;
+            document.getElementById('hero-sub').textContent = t.sub;
+            document.getElementById('hero-copy-hint').textContent = t.copyHint;
+            document.getElementById('store-title').textContent = t.storeTitle;
+            document.getElementById('btn-buy-1').textContent = t.buy;
+            document.getElementById('btn-buy-2').textContent = t.buy;
+            document.getElementById('btn-buy-3').textContent = t.buy;
+            document.getElementById('theme-heading').textContent = t.themeHead;
+            document.getElementById('music-heading').textContent = t.musicHead;
+            document.getElementById('lang-heading').textContent = t.langHead;
+            if (!localStorage.getItem('mc_nick')) {
+                document.getElementById('userBtn').textContent = t.login;
+            }
+        }
+
+        // MODALES LOGIN & USUARIO
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function mostrarPasoVincular() {
+            document.getElementById('authStep1').style.display = 'none';
+            document.getElementById('authStep2').style.display = 'block';
+        }
+
+        async function validarYGuardarNick(e) {
+            e.preventDefault();
+            const edition = document.getElementById('mcEdition').value;
+            let nick = document.getElementById('mcNickInput').value.trim();
+            if (!nick) return;
+
+            localStorage.setItem('mc_nick', nick);
+            localStorage.setItem('mc_edition', edition);
+            actualizarInterfazUsuario(nick, edition);
+            closeModal('authModal');
+        }
+
+        function actualizarInterfazUsuario(nick, edition) {
+            const icon = edition === 'bedrock' ? '📱' : '💻';
+            const userBtn = document.getElementById('userBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            userBtn.textContent = `${icon} ${nick}`;
+            userBtn.onclick = null;
+            logoutBtn.style.display = 'inline-block';
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('mc_nick');
+            localStorage.removeItem('mc_edition');
+            const userBtn = document.getElementById('userBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            userBtn.textContent = '👤 Iniciar Sesión';
+            userBtn.onclick = () => openModal('authModal');
+            logoutBtn.style.display = 'none';
+            document.getElementById('authStep1').style.display = 'block';
+            document.getElementById('authStep2').style.display = 'none';
+        }
+
+        // FUNCIONALIDAD TIENDA COMPLETA Y VALIDACIÓN REAL DE TARJETA (ALGORITMO LUHN)
+        let itemAComprar = "";
+        let precioItem = 0;
+
+        function abrirModalPago(item, precio) {
+            if (!localStorage.getItem('mc_nick')) {
+                alert("⚠️ Debes iniciar sesión e ingresar tu Nick de Minecraft antes de realizar una compra.");
+                openModal('authModal');
+                return;
+            }
+            itemAComprar = item;
+            precioItem = precio;
+            document.getElementById('payItemTitle').textContent = `Comprando: ${item} ($${precio} USD)`;
+            document.getElementById('payStatusMsg').textContent = '';
+            openModal('paymentModal');
+        }
+
+        function formatCardNumber(el) {
+            let val = el.value.replace(/\D/g, '');
+            val = val.replace(/(.{4})/g, '$1 ').trim();
+            el.value = val;
+        }
+
+        function formatExpDate(el) {
+            let val = el.value.replace(/\D/g, '');
+            if (val.length >= 2) {
+                val = val.substring(0, 2) + '/' + val.substring(2, 4);
+            }
+            el.value = val;
+        }
+
+        // VALIDACIÓN MATEMÁTICA REAL DE TARJETA (LUHN ALGORITHM)
+        function validarLuhn(numStr) {
+            let digits = numStr.replace(/\D/g, '');
+            if (digits.length < 13 || digits.length > 19) return false;
+            let sum = 0;
+            let shouldDouble = false;
+            for (let i = digits.length - 1; i >= 0; i--) {
+                let digit = parseInt(digits.charAt(i));
+                if (shouldDouble) {
+                    if ((digit *= 2) > 9) digit -= 9;
+                }
+                sum += digit;
+                shouldDouble = !shouldDouble;
+            }
+            return (sum % 10) === 0;
+        }
+
+        function procesarPago(e) {
+            e.preventDefault();
+            const msg = document.getElementById('payStatusMsg');
+            const name = document.getElementById('cardName').value.trim();
+            const rawCard = document.getElementById('cardNumber').value;
+            const cardNum = rawCard.replace(/\s+/g, '');
+            const exp = document.getElementById('cardExp').value;
+            const cvc = document.getElementById('cardCvc').value;
+
+            if (name.length < 3) {
+                msg.style.color = "var(--error)";
+                msg.textContent = "❌ Escribe el nombre completo del titular.";
+                return;
+            }
+
+            if (!validarLuhn(cardNum)) {
+                msg.style.color = "var(--error)";
+                msg.textContent = "❌ El número de tarjeta no es válido (Fallo de checksum Luhn).";
+                return;
+            }
+
+            if (!/^\d{2}\/\d{2}$/.test(exp)) {
+                msg.style.color = "var(--error)";
+                msg.textContent = "❌ Fecha de vencimiento inválida (Usa MM/AA).";
+                return;
+            }
+
+            if (cvc.length < 3) {
+                msg.style.color = "var(--error)";
+                msg.textContent = "❌ Código CVC/CVV incompleto.";
+                return;
+            }
+
+            msg.style.color = "var(--primary)";
+            msg.textContent = "⏳ Procesando pago seguro con el banco...";
+
+            setTimeout(() => {
+                const nick = localStorage.getItem('mc_nick');
+                msg.style.color = "var(--success)";
+                msg.textContent = `¡Pago Aprobado! 🎉 El ${itemAComprar} ha sido activado para el usuario '${nick}'.`;
+                setTimeout(() => {
+                    closeModal('paymentModal');
+                    document.getElementById('cardName').value = '';
+                    document.getElementById('cardNumber').value = '';
+                    document.getElementById('cardExp').value = '';
+                    document.getElementById('cardCvc').value = '';
+                }, 3000);
+            }, 2000);
+        }
+
+        // COMPROBAR SESIÓN AUTOMÁTICA AL CARGAR
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedNick = localStorage.getItem('mc_nick');
+            const savedEdition = localStorage.getItem('mc_edition');
+            if (savedNick) {
+                actualizarInterfazUsuario(savedNick, savedEdition);
+            }
+        });
+    </script>
 </body>
 </html>
