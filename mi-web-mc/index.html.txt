@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidor de Minecraft</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #00aaff;
+        }
+        .ip-box {
+            background-color: #1e1e1e;
+            border: 2px solid #00aaff;
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 24px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .btn {
+            background-color: #0055ff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #0033aa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡Bienvenido a nuestro servidor de Minecraft!</h1>
+    <p>Conéctate y juega con nosotros en la siguiente IP:</pRamcesHypixel.aternos.me>
+
+    <div class="ip-box">
+        RamcesPixelmc.com
+    </div>
+
+    <br>
+    <a href="https://discord.gg/tu-enlace" target="_blank" class="btn">Unirse al Discord</a>
+
+</body>
+</html>
