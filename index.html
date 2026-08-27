@@ -13,9 +13,9 @@
         }
 
         body {
-            /* Fondo con la imagen del logo con tinte oscuro para que resalte el texto */
-            background: linear-gradient(rgba(10, 15, 29, 0.85), rgba(10, 15, 29, 0.95)), 
-                        url('logo.jpg') no-repeat center center fixed;
+            /* Imagen de fondo en vivo */
+            background: linear-gradient(rgba(10, 15, 29, 0.88), rgba(10, 15, 29, 0.95)), 
+                        url('https://i.imgur.com/uR1623C.jpg') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
             min-height: 100vh;
@@ -27,23 +27,23 @@
         }
 
         .container {
-            background: rgba(18, 25, 44, 0.85);
+            background: rgba(18, 25, 44, 0.88);
             border: 3px solid #ff9d00;
             border-radius: 16px;
             padding: 40px;
             max-width: 600px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 0 25px rgba(255, 157, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 157, 0, 0.35);
             backdrop-filter: blur(8px);
         }
 
         .logo-header {
-            max-width: 280px;
+            max-width: 300px;
             width: 100%;
             height: auto;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 10px rgba(0, 162, 255, 0.5));
+            filter: drop-shadow(0 0 12px rgba(0, 162, 255, 0.6));
         }
 
         h1 {
@@ -70,7 +70,7 @@
         }
 
         .ip-text {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #00d4ff;
             letter-spacing: 1px;
@@ -106,7 +106,6 @@
         .btn-discord:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
-            background: linear-gradient(135deg, #404EED, #3140c6);
         }
 
         .btn-tienda {
@@ -118,18 +117,17 @@
         .btn-tienda:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
-            background: linear-gradient(135deg, #e67e00, #cc6f00);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Logo principal -->
-        <img src="logo.jpg" alt="RamcesPixel Logo" class="logo-header">
+        <!-- Logo cargado directamente -->
+        <img src="logo.png" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.jpg';">
 
         <h1>¡Bienvenido a RamcesPixel!</h1>
-        <p>Entra a vivir la experiencia en nuestro servidor de Minecraft</p>
+        <p>Hecho Por Ramces Explota Baños</p>
 
         <!-- Tarjeta de IP -->
         <div class="ip-card">
