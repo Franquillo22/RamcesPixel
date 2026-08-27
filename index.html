@@ -5,65 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RamcesPixel - Servidor de Minecraft</title>
     
-    <!-- Firebase SDKs (Versión CDN / Compatibilidad) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { min-height: 100vh; background: #090d16; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .container { background: rgba(18, 25, 44, 0.95); border: 3px solid #ff9d00; border-radius: 16px; padding: 40px; text-align: center; max-width: 500px; width: 90%; }
-        h1 { color: #ff9d00; margin-bottom: 10px; }
-        .btn { padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; margin: 8px 0; width: 100%; font-size: 1rem; }
+        body { min-height: 100vh; background: #090d16; color: #fff; display: flex; flex-direction: column; }
+        
+        /* NAVBAR Y HEADER */
+        header { background: #12192c; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff9d00; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #ff9d00; }
+        
+        /* BOTONES DE SESIÓN EN NAVBAR */
+        .user-menu { display: flex; gap: 10px; align-items: center; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; }
+        
+        /* CONTENIDO PRINCIPAL */
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+        .hero-box { background: rgba(18, 25, 44, 0.95); border: 3px solid #ff9d00; border-radius: 16px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 0 20px rgba(255,157,0,0.2); }
+        .hero-title { color: #ff9d00; font-size: 2.5rem; margin-bottom: 10px; }
+        .server-ip { background: #090d16; padding: 10px 15px; border-radius: 8px; border: 1px dashed #ff9d00; display: inline-block; margin: 15px 0; font-family: monospace; font-size: 1.2rem; }
+
+        /* ESTILOS DE BOTONES */
+        .btn { padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; margin: 8px 0; width: 100%; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-discord { background: #5865F2; color: white; }
         .btn-google { background: #ffffff; color: #333; }
         .btn-mc { background: #ff9d00; color: black; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
-        .modal-content { background: #12192c; padding: 30px; border-radius: 12px; border: 2px solid #ff9d00; width: 90%; max-width: 400px; text-align: center; }
-        input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #ff9d00; background: #090d16; color: white; }
+        .modal-content { background: #12192c; padding: 30px; border-radius: 12px; border: 2px solid #ff9d00; width: 90%; max-width: 420px; text-align: center; position: relative; }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ff9d00; background: #090d16; color: white; font-size: 1rem; }
+        .status-msg { font-size: 0.85rem; margin-top: 5px; min-height: 18px; }
+        .svg-icon { width: 20px; height: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>RamcesPixel</h1>
-        <p style="margin-bottom: 20px;">Servidor Java & Bedrock</p>
-        <button class="btn btn-mc" id="userBtn" onclick="openModal('authModal')">👤 Iniciar Sesión / Vincular</button>
-    </div>
+    <!-- NAVBAR PRINCIPAL PERMANENTE -->
+    <header>
+        <div class="logo">RAMCESPIXEL</div>
+        <div class="user-menu">
+            <button class="btn-mc" id="userBtn" style="padding: 8px 16px; width: auto;" onclick="openAuthModal()">👤 Iniciar Sesión</button>
+            <button class="btn-logout" id="logoutBtn" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- PÁGINA PRINCIPAL -->
+    <main>
+        <div class="hero-box">
+            <h1 class="hero-title">¡Bienvenido a RamcesPixel!</h1>
+            <p>Servidor compatible con Java & Bedrock Edition</p>
+            
+            <div class="server-ip">play.ramcespixel.net</div>
+            
+            <p style="font-size: 0.95rem; color: #aaa; margin-top: 10px;" id="welcomeMsg">
+                Inicia sesión y vincula tu cuenta para acceder a compras, recompensas y estadísticas.
+            </p>
+        </div>
+    </main>
 
     <!-- MODAL DE AUTENTICACIÓN -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2 style="color: #ff9d00; margin-bottom: 15px;">🔐 Iniciar Sesión</h2>
+            <h2 style="color: #ff9d00; margin-bottom: 15px;">🔐 Autenticación</h2>
             
-            <!-- PASO 1: LOGIN SOCIAL -->
+            <!-- PASO 1: LOGIN SOCIAL CON LOGOS REALES -->
             <div id="authStep1">
-                <p style="font-size:0.9rem; margin-bottom:12px;">Elige tu método de ingreso:</p>
-                <button class="btn btn-google" onclick="loginWithGoogle()">🌐 Entrar con Google</button>
-                <button class="btn btn-discord" onclick="loginWithDiscord()">🎮 Entrar con Discord</button>
+                <p style="font-size:0.9rem; margin-bottom:15px; color:#ccc;">Elige tu cuenta para identificarte:</p>
+                
+                <button class="btn btn-google" onclick="loginWithGoogle()">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.37 7.37 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.15 0 9.99 0 12s.45 3.85 1.24 5.42l4.04-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.37 0 3.26 2.63 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                    Entrar con Google
+                </button>
+                
+                <button class="btn btn-discord" onclick="loginWithDiscord()">
+                    <svg class="svg-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    Entrar con Discord
+                </button>
             </div>
 
-            <!-- PASO 2: VINCULAR NICK (JAVA Y BEDROCK) -->
+            <!-- PASO 2: VINCULAR NICK DE MINECRAFT -->
             <div id="authStep2" style="display: none;">
-                <p style="color: #00d4ff; font-size:0.9rem; margin-bottom:10px;">¡Autenticado con éxito! Elige tu plataforma e ingresa tu Nick:</p>
+                <p style="color: #00d4ff; font-size:0.9rem; margin-bottom:10px;">¡Autenticado! Selecciona tu edición e ingresa tu nick exacto:</p>
+                
                 <form onsubmit="validarYGuardarNick(event)">
                     <select id="mcEdition">
-                        <option value="java">Minecraft Java Edition</option>
-                        <option value="bedrock">Minecraft Bedrock / Celular / Consola</option>
+                        <option value="java">Minecraft Java Edition (Premium)</option>
+                        <option value="bedrock">Minecraft Bedrock / Móvil / Consola</option>
                     </select>
 
-                    <input type="text" id="mcNickInput" placeholder="Tu usuario exacto" required>
-                    <button type="submit" class="btn btn-mc">Vincular Usuario</button>
+                    <input type="text" id="mcNickInput" placeholder="Ejemplo: Notch o .UsuarioBedrock" required>
+                    
+                    <div id="statusMsg" class="status-msg"></div>
+
+                    <button type="submit" id="btnVerify" class="btn btn-mc">Verificar y Vincular</button>
                 </form>
             </div>
             
-            <button style="background:none; border:none; color:#aaa; margin-top:10px; cursor:pointer;" onclick="closeModal('authModal')">Cerrar</button>
+            <button style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;" onclick="closeModal('authModal')">Cancelar</button>
         </div>
     </div>
 
     <script>
-        // --- 1. FIREBASE CONFIG REAL (TU PROYECTO) ---
+        // --- 1. CONFIGURACIÓN FIREBASE REAL ---
         const firebaseConfig = {
             apiKey: "AIzaSyAg8cND_1e8MaY3i9YDoIBUfSQON9LQSck",
             authDomain: "ramces-pixel.firebaseapp.com",
@@ -74,57 +123,43 @@
             measurementId: "G-D7P8MMS7GG"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-        let loggedUserEmail = null;
-
-        // Iniciar Sesión con Google
+        // Autenticación Google
         function loginWithGoogle() {
             firebase.auth().signInWithPopup(googleProvider)
                 .then((result) => {
-                    loggedUserEmail = result.user.email;
+                    localStorage.setItem('auth_type', 'Google');
                     mostrarPasoVincular();
                 })
                 .catch((error) => {
-                    alert("Error en autenticación con Google: " + error.message);
+                    alert("Error en Google Auth: " + error.message);
                 });
         }
 
-        // --- 2. DISCORD AUTH REAL (TU ENLACE) ---
+        // Autenticación Discord (Tu URL OAuth2)
         function loginWithDiscord() {
-            // Se usa response_type=token para leerlo directo sin backend
             const discordUrl = "https://discord.com/oauth2/authorize?client_id=1542606598084497418&response_type=token&redirect_uri=https%3A%2F%2Ffranquillo22.github.io%2FRamcesPixel%2F&scope=identify";
             window.location.href = discordUrl;
         }
 
-        // Detectar si el usuario regresa de Discord
+        // Listener al cargar la página
         window.addEventListener('load', () => {
+            // Verificar si regresa de Discord con Token
             const hash = window.location.hash;
             if (hash.includes('access_token')) {
-                const params = new URLSearchParams(hash.replace('#', '?'));
-                const token = params.get('access_token');
-                
-                // Pedir datos del usuario a Discord
-                fetch('https://discord.com/api/users/@me', {
-                    headers: { authorization: `Bearer ${token}` }
-                })
-                .then(res => res.json())
-                .then(user => {
-                    loggedUserEmail = `${user.username}#${user.discriminator || '0'}`;
-                    openModal('authModal');
-                    mostrarPasoVincular();
-                    history.replaceState(null, "", window.location.pathname);
-                })
-                .catch(() => alert("Error al obtener datos de Discord"));
+                localStorage.setItem('auth_type', 'Discord');
+                openModal('authModal');
+                mostrarPasoVincular();
+                history.replaceState(null, "", window.location.pathname);
             }
 
-            // Cargar sesión guardada previamente
+            // Comprobar si ya existe una sesión activa guardada
             const savedNick = localStorage.getItem('mc_nick');
             const savedEdition = localStorage.getItem('mc_edition');
             if (savedNick) {
-                actualizarBotonUsuario(savedNick, savedEdition);
+                actualizarInterfazUsuario(savedNick, savedEdition);
             }
         });
 
@@ -133,52 +168,122 @@
             document.getElementById('authStep2').style.display = 'block';
         }
 
-        // --- 3. VALIDACIÓN DE NICK (JAVA Y BEDROCK) ---
+        // --- 2. VERIFICACIÓN REAL DE CUENTAS DE MINECRAFT ---
         async function validarYGuardarNick(e) {
             e.preventDefault();
             const edition = document.getElementById('mcEdition').value;
             let nick = document.getElementById('mcNickInput').value.trim();
+            const statusMsg = document.getElementById('statusMsg');
+            const btnVerify = document.getElementById('btnVerify');
 
             if (!nick) return;
 
+            statusMsg.style.color = '#ff9d00';
+            statusMsg.textContent = 'Verificando datos con los servidores...';
+            btnVerify.disabled = true;
+
             if (edition === 'java') {
-                // Validación para cuentas Java (API de Mojang)
+                // DOBLE VERIFICACIÓN JAVA (API Ashcon + API Mojang como fallback)
+                let esValida = false;
+                let realUsername = nick;
+
                 try {
-                    const res = await fetch(`https://api.ashcon.app/mojang/v2/user/${nick}`);
-                    if (!res.ok) {
-                        alert("❌ La cuenta Java no existe o no es Premium. Si juegas desde celular o Consola, cambia el selector a Bedrock.");
-                        return;
+                    // Intento 1: API Ashcon
+                    const res1 = await fetch(`https://api.ashcon.app/mojang/v2/user/${nick}`);
+                    if (res1.ok) {
+                        const data1 = await res1.json();
+                        realUsername = data1.username;
+                        esValida = true;
+                    } else {
+                        // Intento 2: API directa de Mojang
+                        const res2 = await fetch(`https://api.mojang.com/users/profiles/minecraft/${nick}`);
+                        if (res2.ok) {
+                            const data2 = await res2.json();
+                            realUsername = data2.name;
+                            esValida = true;
+                        }
                     }
-                    const data = await res.json();
-                    nick = data.username; // Mayúsculas y minúsculas exactas
                 } catch (err) {
-                    alert("No se pudo verificar el nick con Mojang. Inténtalo de nuevo.");
+                    // Fallback en caso de bloqueo de red
+                    esValida = false;
+                }
+
+                if (!esValida) {
+                    statusMsg.style.color = '#ff4d4d';
+                    statusMsg.textContent = '❌ El nick de Java no existe o no es una cuenta Premium activa.';
+                    btnVerify.disabled = false;
                     return;
                 }
+
+                nick = realUsername;
+
             } else {
-                // Validación para Bedrock (Soporta '.' o '_' como prefijo)
-                if (nick.length < 3 || nick.length > 20) {
-                    alert("❌ Un nick de Bedrock debe tener entre 3 y 20 caracteres.");
+                // VERIFICACIÓN BEDROCK (Longitud + Formato de Nick Bedrock/Geyser)
+                if (nick.length < 3 || nick.length > 24) {
+                    statusMsg.style.color = '#ff4d4d';
+                    statusMsg.textContent = '❌ El nick de Bedrock debe tener entre 3 y 24 caracteres.';
+                    btnVerify.disabled = false;
                     return;
                 }
             }
 
-            // Guardar localmente
+            // GUARDAR SESIÓN SI LA VALIDACIÓN ES EXITOSA
             localStorage.setItem('mc_nick', nick);
             localStorage.setItem('mc_edition', edition);
 
-            actualizarBotonUsuario(nick, edition);
+            actualizarInterfazUsuario(nick, edition);
             closeModal('authModal');
-            alert(`¡Cuenta vinculada exitosamente como ${nick} (${edition.toUpperCase()})!`);
+            
+            btnVerify.disabled = false;
+            statusMsg.textContent = '';
+            alert(`¡Vinculación exitosa! Bienvenido ${nick}`);
         }
 
-        function actualizarBotonUsuario(nick, edition) {
+        // --- 3. GESTIÓN DE INTERFAZ Y LOGOUT ---
+        function actualizarInterfazUsuario(nick, edition) {
             const icon = edition === 'bedrock' ? '📱' : '💻';
-            document.getElementById('userBtn').textContent = `${icon} ${nick}`;
+            const userBtn = document.getElementById('userBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+
+            userBtn.textContent = `${icon} ${nick}`;
+            userBtn.onclick = null; // Quita el evento de abrir modal
+            logoutBtn.style.display = 'block';
+
+            welcomeMsg.innerHTML = `Sesión iniciada como <strong>${nick}</strong> (${edition.toUpperCase()}). Ya puedes acceder a todas las funciones.`;
         }
 
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function cerrarSesion() {
+            // Limpiar datos guardados
+            localStorage.removeItem('mc_nick');
+            localStorage.removeItem('mc_edition');
+            localStorage.removeItem('auth_type');
+
+            // Resetear interfaz a estado inicial
+            const userBtn = document.getElementById('userBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+
+            userBtn.textContent = '👤 Iniciar Sesión';
+            userBtn.onclick = openAuthModal;
+            logoutBtn.style.display = 'none';
+
+            welcomeMsg.textContent = 'Inicia sesión y vincula tu cuenta para acceder a compras, recompensas y estadísticas.';
+
+            // Resetear paso a paso del modal
+            document.getElementById('authStep1').style.display = 'block';
+            document.getElementById('authStep2').style.display = 'none';
+            
+            alert("Has cerrado sesión correctamente.");
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+        }
     </script>
 </body>
 </html>
