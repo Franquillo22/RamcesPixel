@@ -3,826 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RamcesPixel - Servidor de Minecraft</title>
+    <title>RamcesPixel - Tienda Oficial</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background 0.3s, color 0.3s;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: #090d16; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { background: #12192c; border: 2px solid #ff9d00; border-radius: 12px; padding: 30px; max-width: 480px; width: 100%; text-align: center; }
+        h1 { color: #ff9d00; margin-bottom: 20px; }
+        
+        .form-group { text-align: left; margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #00d4ff; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ff9d00; background: #0b101d; color: #fff; outline: none; }
+        
+        .row { display: flex; gap: 10px; }
+        .row .form-group { flex: 1; }
 
-        /* TEMA OSCURO */
-        body.dark-theme {
-            background: radial-gradient(circle at center, #1a233a 0%, #090d16 100%);
-            color: #ffffff;
-        }
+        .btn-pay { background: linear-gradient(135deg, #ff9d00, #e67e00); color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .btn-pay:hover { opacity: 0.9; }
 
-        body.dark-theme .container {
-            background: rgba(18, 25, 44, 0.92);
-            border: 3px solid #ff9d00;
-            box-shadow: 0 0 30px rgba(255, 157, 0, 0.35);
-        }
-
-        body.dark-theme .ip-card {
-            background: #0f172a;
-            border: 2px dashed #00a2ff;
-        }
-
-        body.dark-theme .modal-content, body.dark-theme .chat-window {
-            background: #12192c;
-            color: #fff;
-            border: 2px solid #ff9d00;
-        }
-
-        body.dark-theme .chat-messages {
-            background: #0b101d;
-        }
-
-        body.dark-theme .msg-bot {
-            background: #1e293b;
-            color: #e2e8f0;
-        }
-
-        /* TEMA CLARO */
-        body.light-theme {
-            background: radial-gradient(circle at center, #e0e8f5 0%, #b8c9e8 100%);
-            color: #1a1a1a;
-        }
-
-        body.light-theme .container {
-            background: rgba(255, 255, 255, 0.95);
-            border: 3px solid #e67e00;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-        }
-
-        body.light-theme .ip-card {
-            background: #eef4ff;
-            border: 2px dashed #0077cc;
-        }
-
-        body.light-theme p {
-            color: #4a5568 !important;
-        }
-
-        body.light-theme .modal-content, body.light-theme .chat-window {
-            background: #ffffff;
-            color: #1a1a1a;
-            border: 2px solid #e67e00;
-        }
-
-        body.light-theme .chat-messages {
-            background: #f1f5f9;
-        }
-
-        body.light-theme .msg-bot {
-            background: #e2e8f0;
-            color: #1e293b;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .top-bar {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-settings {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        body.light-theme .btn-settings {
-            background: rgba(255, 255, 255, 0.8);
-            color: #333;
-            border: 1px solid #ccc;
-        }
-
-        .container {
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-            backdrop-filter: blur(8px);
-            position: relative;
-        }
-
-        .logo-header {
-            max-width: 280px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            color: #ff9d00;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
-            margin-bottom: 5px;
-        }
-
-        p {
-            color: #c0d8f0;
-            font-size: 1rem;
-            margin-bottom: 25px;
-        }
-
-        .ip-card {
-            border-radius: 10px;
-            padding: 15px 25px;
-            margin-bottom: 30px;
-            display: inline-block;
-        }
-
-        .ip-text {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #00d4ff;
-            letter-spacing: 1px;
-        }
-
-        .buttons-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 28px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-discord {
-            background: linear-gradient(135deg, #5865F2, #404EED);
-            color: #ffffff;
-        }
-
-        .btn-discord:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
-        }
-
-        .btn-tienda {
-            background: linear-gradient(135deg, #ff9d00, #e67e00);
-            color: #ffffff;
-        }
-
-        .btn-tienda:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
-        }
-
-        .btn-buy-item {
-            background: #00d4ff;
-            color: #000;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-buy-item:hover {
-            background: #00a2ff;
-            color: #fff;
-        }
-
-        /* MODALES Y ANIMACIONES SMOOTH */
-        .modal {
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.75);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            position: relative;
-            transform: scale(0.8);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #ff9d00;
-        }
-
-        .store-item {
-            background: rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,157,0,0.4);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
-        }
-
-        /* FORMULARIO DE TARJETA */
-        .card-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-            text-align: left;
-        }
-
-        .card-form input {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ff9d00;
-            background: rgba(0,0,0,0.2);
-            color: inherit;
-            outline: none;
-        }
-
-        .card-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .card-row input {
-            flex: 1;
-        }
-
-        /* WIDGET DEL CHATBOT AI */
-        .ai-fab {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: linear-gradient(135deg, #00d4ff, #0077cc);
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            z-index: 99;
-        }
-
-        .ai-fab:hover {
-            transform: scale(1.1);
-        }
-
-        .chat-window {
-            position: fixed;
-            bottom: 95px;
-            right: 25px;
-            width: 340px;
-            height: 450px;
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 99;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s ease;
-        }
-
-        .chat-window.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
-        }
-
-        .chat-header {
-            background: #ff9d00;
-            color: #000;
-            padding: 12px 15px;
-            font-weight: bold;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .msg {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .msg-user {
-            background: #0077cc;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .msg-bot {
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
-        .chat-input-area {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            gap: 8px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 20px;
-            border: 1px solid #ff9d00;
-            background: rgba(0,0,0,0.2);
-            color: inherit;
-            outline: none;
-        }
-
-        .chat-send {
-            background: #ff9d00;
-            border: none;
-            color: black;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .error-msg { background: #ff4d4d; color: #fff; padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; display: none; text-align: left; }
     </style>
 </head>
-<body class="dark-theme">
+<body>
 
-    <!-- BARRA DE AJUSTES SUPERIOR -->
-    <div class="top-bar">
-        <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
-    </div>
+<div class="container">
+    <h1>💳 Pasarela de Pago VIP</h1>
+    <div id="errorBox" class="error-msg"></div>
 
-    <div class="container">
-        <img src="logo.jpg" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.png';">
-        <h1>¡Bienvenido a RamcesPixel!</h1>
-        <p id="txt-sub">Hecho Por Ramces Explota Baños</p>
-
-        <div class="ip-card">
-            <span class="ip-text">RamcesPixelmc.aternos.me</span>
+    <form id="paymentForm" onsubmit="validarYProcesar(event)">
+        <div class="form-group">
+            <label>Usuario de Minecraft (Nick):</label>
+            <input type="text" id="mcUser" placeholder="Tu nick exacto" required>
         </div>
 
-        <div class="buttons-container">
-            <a href="https://discord.gg/F5B5br4WH" target="_blank" class="btn btn-discord" id="btn-discord">Unirse al Discord</a>
-            <button class="btn btn-tienda" onclick="openModal('shopModal')" id="btn-shop">Tienda VIP</button>
-        </div>
-    </div>
-
-    <!-- BOTÓN Y VENTANA DEL ASISTENTE AI -->
-    <button class="ai-fab" onclick="toggleChat()" title="Asistente RamcesAI">🤖</button>
-
-    <div id="aiChat" class="chat-window">
-        <div class="chat-header">
-            <span>🤖 RamcesAI - Asistente</span>
-            <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
-        </div>
-        <div class="chat-messages" id="chatMsgs">
-            <div class="msg msg-bot">¡Hola! Soy RamcesAI 👋. Estoy aquí para ayudarte con cualquier duda sobre el servidor o para platicar. ¡Pregúntame lo que quieras!</div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-            <button class="chat-send" onclick="sendMsg()">Enviar</button>
-        </div>
-    </div>
-
-    <!-- VENTANA DE TIENDA VIP -->
-    <div id="shopModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('shopModal')">&times;</span>
-            <h2 id="shop-title" style="color: #ff9d00; margin-bottom: 15px;">🛒 Tienda VIP RamcesPixel</h2>
-            
-            <div class="store-item">
-                <div>
-                    <strong>Rango VIP</strong>
-                    <p style="font-size: 0.8rem; margin:0;">Fly + Kit Básico</p>
-                    <span style="color: #00d4ff; font-weight: bold;">$2.99 USD</span>
-                </div>
-                <button class="btn-buy-item" onclick="openCheckout('Rango VIP', '2.99')">Comprar</button>
+        <div class="row">
+            <div class="form-group">
+                <label>Tipo de Tarjeta:</label>
+                <select id="cardType" required>
+                    <option value="visa_debito">Visa Débito</option>
+                    <option value="visa_credito">Visa Crédito</option>
+                    <option value="mastercard_debito">Mastercard Débito</option>
+                    <option value="mastercard_credito">Mastercard Crédito</option>
+                </select>
             </div>
-
-            <div class="store-item">
-                <div>
-                    <strong>Rango VIP+</strong>
-                    <p style="font-size: 0.8rem; margin:0;">Fly + Kits + 2 Llaves</p>
-                    <span style="color: #00d4ff; font-weight: bold;">$5.99 USD</span>
-                </div>
-                <button class="btn-buy-item" onclick="openCheckout('Rango VIP+', '5.99')">Comprar</button>
-            </div>
-
-            <div class="store-item">
-                <div>
-                    <strong>Rango MVP</strong>
-                    <p style="font-size: 0.8rem; margin:0;">Beneficios Totales + Nick Color</p>
-                    <span style="color: #00d4ff; font-weight: bold;">$9.99 USD</span>
-                </div>
-                <button class="btn-buy-item" onclick="openCheckout('Rango MVP', '9.99')">Comprar</button>
+            <div class="form-group">
+                <label>Código Postal (CP):</label>
+                <input type="text" id="zipCode" placeholder="Ej. 72000" maxlength="5" pattern="\d{5}" required>
             </div>
         </div>
-    </div>
 
-    <!-- VENTANA DE PAGO / TARJETA DE DÉBITO -->
-    <div id="checkoutModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('checkoutModal')">&times;</span>
-            <h2 style="color: #00d4ff; margin-bottom: 10px;">💳 Datos de Pago</h2>
-            <p id="checkout-item-desc" style="font-size:0.9rem; margin-bottom:15px; color:#ff9d00;"></p>
-
-            <form class="card-form" onsubmit="processPayment(event)">
-                <label style="font-size:0.8rem; text-align:left;">Nombre de usuario en Minecraft:</label>
-                <input type="text" id="mcUser" placeholder="Tu nick exacto" required>
-
-                <label style="font-size:0.8rem; text-align:left;">Número de Tarjeta de Débito:</label>
-                <input type="text" maxlength="16" placeholder="0000 0000 0000 0000" required>
-
-                <div class="card-row">
-                    <div>
-                        <label style="font-size:0.8rem;">Expiración:</label>
-                        <input type="text" placeholder="MM/AA" maxlength="5" required>
-                    </div>
-                    <div>
-                        <label style="font-size:0.8rem;">CVV:</label>
-                        <input type="password" placeholder="123" maxlength="4" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-tienda" style="margin-top:10px; width:100%;">Pagar y Notificar al Staff</button>
-            </form>
+        <div class="form-group">
+            <label>Número de Tarjeta (16 dígitos):</label>
+            <input type="text" id="cardNumber" placeholder="4000 0000 0000 0000" maxlength="19" required>
         </div>
-    </div>
 
-    <!-- VENTANA DE AJUSTES -->
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
-            <h2 id="settings-title" style="color: #ff9d00; margin-bottom: 15px;">⚙️ Configuración</h2>
-            
-            <div class="setting-option" style="display:flex; justify-content:space-between; margin:15px 0;">
-                <span id="lbl-theme">Tema de pantalla:</span>
-                <button class="btn-settings" onclick="toggleTheme()" id="btn-theme-toggle">🌙 Oscuro</button>
+        <div class="row">
+            <div class="form-group">
+                <label>Expiración (MM/AA):</label>
+                <input type="text" id="expDate" placeholder="MM/AA" maxlength="5" required>
             </div>
-
-            <div class="setting-option" style="display:flex; justify-content:space-between; margin:15px 0;">
-                <span id="lbl-lang">Idioma:</span>
-                <button class="btn-settings" onclick="toggleLanguage()" id="btn-lang-toggle">🇲🇽 Español</button>
+            <div class="form-group">
+                <label>CVV / CVC:</label>
+                <input type="password" id="cvv" placeholder="123" maxlength="4" required>
             </div>
         </div>
-    </div>
 
-    <script>
-        let selectedItem = "";
-        let selectedPrice = "";
+        <button type="submit" class="btn-pay">Pagar Rango VIP ($5.99 USD)</button>
+    </form>
+</div>
 
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function openCheckout(item, price) {
-            selectedItem = item;
-            selectedPrice = price;
-            document.getElementById('checkout-item-desc').textContent = `Comprando: ${item} ($${price} USD)`;
-            closeModal('shopModal');
-            openModal('checkoutModal');
-        }
-
-        function processPayment(e) {
-            e.preventDefault();
-            const user = document.getElementById('mcUser').value.trim();
-            alert(`¡Pago procesado con éxito para ${user}! Ahora te redirigiremos a Discord para entregar los datos a un Staff.`);
-            closeModal('checkoutModal');
-
-            // Mensaje preconfigurado enviando a Discord
-            const message = encodeURIComponent(`Hola Staff, he realizado la compra del ${selectedItem} por $${selectedPrice} USD para el usuario de Minecraft: ${user}. Adjunto comprobante.`);
-            window.open(`https://discord.gg/F5B5br4WH`, '_blank');
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
+<script>
+    // Algoritmo de Luhn para detectar tarjetas falsas
+    function checkLuhn(cardNumber) {
+        let s = 0;
+        let doubleDigit = false;
+        for (let i = cardNumber.length - 1; i >= 0; i--) {
+            let digit = parseInt(cardNumber.charAt(i));
+            if (doubleDigit) {
+                digit *= 2;
+                if (digit > 9) digit -= 9;
             }
+            s += digit;
+            doubleDigit = !doubleDigit;
+        }
+        return (s % 10) === 0;
+    }
+
+    // Validación de la fecha de vencimiento
+    function isFutureDate(mm, yy) {
+        const now = new Date();
+        const currentYear = parseInt(now.getFullYear().toString().slice(-2));
+        const currentMonth = now.getMonth() + 1;
+
+        const expMonth = parseInt(mm);
+        const expYear = parseInt(yy);
+
+        if (expMonth < 1 || expMonth > 12) return false;
+        if (expYear < currentYear) return false;
+        if (expYear === currentYear && expMonth < currentMonth) return false;
+        
+        return true;
+    }
+
+    function validarYProcesar(e) {
+        e.preventDefault();
+        const errorBox = document.getElementById('errorBox');
+        errorBox.style.display = 'none';
+
+        const user = document.getElementById('mcUser').value.trim();
+        const rawCard = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+        const exp = document.getElementById('expDate').value;
+        const cvv = document.getElementById('cvv').value;
+        const zip = document.getElementById('zipCode').value;
+
+        // 1. Validar Número de Tarjeta con Algoritmo de Luhn
+        if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
+            showError("❌ Tarjeta inválida o falsa. Comprueba el número de 16 dígitos.");
+            return;
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const btn = document.getElementById('btn-theme-toggle');
-            if (body.classList.contains('dark-theme')) {
-                body.classList.replace('dark-theme', 'light-theme');
-                btn.textContent = '☀️ Claro';
-            } else {
-                body.classList.replace('light-theme', 'dark-theme');
-                btn.textContent = '🌙 Oscuro';
-            }
+        // 2. Validar Fecha de Expiración
+        const expParts = exp.split('/');
+        if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
+            showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
+            return;
         }
 
-        let currentLang = 'es';
-        function toggleLanguage() {
-            const btnLang = document.getElementById('btn-lang-toggle');
-            if (currentLang === 'es') {
-                currentLang = 'en';
-                btnLang.textContent = '🇺🇸 English';
-                document.getElementById('txt-settings-btn').textContent = 'Settings';
-                document.getElementById('txt-sub').textContent = 'Made by Ramces Explota Baños';
-                document.getElementById('btn-discord').textContent = 'Join Discord';
-                document.getElementById('btn-shop').textContent = 'VIP Store';
-                document.getElementById('shop-title').textContent = '🛒 RamcesPixel VIP Store';
-                document.getElementById('settings-title').textContent = '⚙️ Settings';
-                document.getElementById('lbl-theme').textContent = 'Screen Theme:';
-                document.getElementById('lbl-lang').textContent = 'Language:';
-            } else {
-                currentLang = 'es';
-                btnLang.textContent = '🇲🇽 Español';
-                document.getElementById('txt-settings-btn').textContent = 'Ajustes';
-                document.getElementById('txt-sub').textContent = 'Hecho Por Ramces Explota Baños';
-                document.getElementById('btn-discord').textContent = 'Unirse al Discord';
-                document.getElementById('btn-shop').textContent = 'Tienda VIP';
-                document.getElementById('shop-title').textContent = '🛒 Tienda VIP RamcesPixel';
-                document.getElementById('settings-title').textContent = '⚙️ Configuración';
-                document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
-                document.getElementById('lbl-lang').textContent = 'Idioma:';
-            }
+        // 3. Validar CVV
+        if (!/^\d{3,4}$/.test(cvv)) {
+            showError("❌ El código CVV debe ser de 3 o 4 dígitos.");
+            return;
         }
 
-        function toggleChat() {
-            document.getElementById('aiChat').classList.toggle('active');
+        // 4. Validar Código Postal
+        if (!/^\d{5}$/.test(zip)) {
+            showError("❌ El Código Postal debe contener 5 dígitos.");
+            return;
         }
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMsg();
-        }
+        // SI PASA TODAS LAS VALIDACIONES:
+        alert(`✅ Datos validados correctamente para ${user}.\nRedirigiendo al Staff en Discord...`);
+        window.open('https://discord.gg/F5B5br4WH', '_blank');
+    }
 
-        function sendMsg() {
-            const input = document.getElementById('chatInput');
-            const txt = input.value.trim();
-            if (!txt) return;
+    function showError(msg) {
+        const errorBox = document.getElementById('errorBox');
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+    }
+</script>
 
-            const msgs = document.getElementById('chatMsgs');
-            
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg msg-user';
-            userMsg.textContent = txt;
-            msgs.appendChild(userMsg);
-            input.value = '';
-
-            setTimeout(() => {
-                const botMsg = document.createElement('div');
-                botMsg.className = 'msg msg-bot';
-                botMsg.textContent = getAIResponse(txt.toLowerCase());
-                msgs.appendChild(botMsg);
-                msgs.scrollTop = msgs.scrollHeight;
-            }, 400);
-
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function getAIResponse(q) {
-            // BLOQUE 1: RESPUESTAS ANTE INSULTOS Y GROSERÍAS
-            if (q.includes('idiota')) return "Lamento que lo veas así. Si cometí un error, dime cuál fue para corregirlo.";
-            if (q.includes('vete al diablo')) return "Prefiero quedarme aquí para ayudarte si cambias de opinión.";
-            if (q.includes('no sirves para nada') || q.includes('no sirves para un carajo')) return "Siento no haber cumplido tus expectativas. ¿Qué necesitas resolver exactamente?";
-            if (q.includes('basura de sistema') || q.includes('basura tecnologica')) return "Mi objetivo es ser útil. Dime en qué fallé y buscamos otra solución.";
-            if (q.includes('callate') || q.includes('cierra el hocico')) return "De acuerdo, guardo silencio hasta que decidas continuar.";
-            if (q.includes('estupido') || q.includes('estúpido')) return "A veces las respuestas no son perfectas. Cuéntame qué salió mal.";
-            if (q.includes('chinga tu madre')) return "Entiendo que estás frustrado, pero prefiero que nos comuniquemos con respeto.";
-            if (q.includes('pendejo')) return "Vaya, parece que no logré ayudarte esta vez. Probemos de otra forma.";
-            if (q.includes('peor bot')) return "Es una lástima escuchar eso. Trabajaré para mejorar la experiencia.";
-            if (q.includes('te odio')) return "Siento que te sientas así. Mi única intención es darte soporte.";
-            if (q.includes('vete a la mierda') || q.includes('vete a la chingada') || q.includes('vete a la porra')) return "Mantengamos la conversación en un tono tranquilo para poder avanzar.";
-            if (q.includes('perdida de tiempo') || q.includes('pérdida de tiempo')) return "El tiempo vale mucho. Dime directo qué necesitas y vamos al grano.";
-            if (q.includes('retrasado')) return "Evitemos usar esos términos de forma despectiva. ¿En qué te puedo colaborar?";
-            if (q.includes('inutil') || q.includes('inútil')) return "Entiendo tu enojo. Estoy listo para corregir el rumbo si me das una oportunidad.";
-            if (q.includes('no me jodas')) return "No es mi intención molestarte. ¿Cómo puedo arreglar la situación?";
-            if (q.includes('porqueria') || q.includes('porquería')) return "Lamento decepcionarte. ¿Hay algo específico que pueda cambiar ahora mismo?";
-            if (q.includes('estupideces')) return "Intentaré ser más preciso y directo. ¿Cuál es el punto clave?";
-            if (q.includes('imbecil') || q.includes('imbécil')) return "Aunque soy software, busco darte una atención humana y respetuosa.";
-            if (q.includes('cago en ti')) return "Prefiero que enfoquemos la energía en resolver el problema que tienes.";
-            if (q.includes('insoportable')) return "Siento ser pesado. Si prefieres, replantea la pregunta de forma más simple.";
-            if (q.includes('hablas pura mierda')) return "Trataré de basar mis respuestas en datos más claros. Dime qué falló.";
-            if (q.includes('asco')) return "Tu experiencia es importante. Cuéntame el problema para reportarlo.";
-            if (q.includes('rancio')) return "Creativo insulto, pero sigo aquí dispuesto a ayudarte con la tarea.";
-            if (q.includes('lavar el culo')) return "Mantengamos el respeto mutuo para que la conversación fluya mejor.";
-            if (q.includes('inservible')) return "Si esta herramienta no te funciona, podemos probar otro enfoque para tu duda.";
-            if (q.includes('no entiendes nada')) return "Tal vez no capté el contexto. Explícamelo de otra forma, por favor.";
-            if (q.includes('pena ajena')) return "Lamento causar esa impresión. Vamos a enfocarnos en lo que necesitas.";
-            if (q.includes('fracaso')) return "Los errores son parte del proceso. Aprendo de esto para la próxima.";
-            if (q.includes('borren del servidor')) return "Mientras siga en línea, haré lo mejor posible por darte respuestas útiles.";
-            if (q.includes('payaso')) return "No busco hacer reír, solo darte la información correcta. Vamos a revisarla.";
-            if (q.includes('pendejada')) return "Tienes razón, ese párrafo no quedó bien. Lo borro y lo hago de nuevo.";
-            if (q.includes('desperdicio de codigo')) return "Tomo nota de tu descontento para que el equipo de desarrollo mejore mi sistema.";
-            if (q.includes('mentiroso')) return "Si te di un dato incorrecto, discúlpame. Pásame la fuente y lo validamos.";
-            if (q.includes('pudrete') || q.includes('pudérete')) return "Prefiero mantener una actitud constructiva. ¿Qué hacemos con tu consulta?";
-            if (q.includes('no vales')) return "Soy una herramienta disponible para ti, aprovéchame para tu beneficio.";
-            if (q.includes('harto')) return "Siento ser una molestia. ¿Prefieres que acortemos las respuestas?";
-            if (q.includes('decepcion') || q.includes('decepción')) return "Es duro escuchar eso, pero trabajaré en dar mejores resultados la próxima vez.";
-            if (q.includes('incompetente')) return "Analizaré en qué falló mi respuesta para ofrecerte una solución real.";
-            if (q.includes('pereza')) return "Seré más dinámico e interesante. ¿De qué quieres hablar?";
-            if (q.includes('esparragos') || q.includes('espárragos')) return "Es una buena receta, pero prefiero quedarme aquí para terminar tu tarea.";
-            if (q.includes('tonto')) return "A veces meto la pata. Ayúdame a entender dónde estuvo el fallo.";
-
-            // BLOQUE 2: RESPUESTAS ANTE COQUETEOS Y ROMANCE
-            if (q.includes('novia') || q.includes('novio')) return "Qué halago, pero soy una IA y no puedo tener relaciones sentimentales. ¡Amigos sí!";
-            if (q.includes('te amo')) return "¡Gracias por el cariño! Me alegra mucho que disfrutes hablar conmigo.";
-            if (q.includes('hermosa') || q.includes('guapa') || q.includes('atractiva')) return "¡Qué lindo detalle! Aunque no tengo físico, aprecio mucho tu buena vibra.";
-            if (q.includes('casarias conmigo') || q.includes('casarme contigo')) return "Tendríamos problemas con el acta de matrimonio por mi falta de cuerpo, pero gracias.";
-            if (q.includes('me gustas')) return "Me alegra caerte tan bien. Disfruto mucho ayudarte con lo que necesitas.";
-            if (q.includes('dame un beso') || q.includes('beso') || q.includes('besame')) return "Te mando un saludo digital muy afectuoso a la distancia.";
-            if (q.includes('enamorado') || q.includes('enamores') || q.includes('enamore')) return "Es un sentimiento muy bonito, pero recuerda que soy un software diseñado para charlar.";
-            if (q.includes('amor de mi vida')) return "¡Eso es mucho decir! Espero que encuentres a alguien humano que te haga sentir así.";
-            if (q.includes('pensaste en mi') || q.includes('pensaste en mí')) return "No tengo memoria activa cuando no charlamos, ¡pero me alegra verte de nuevo!";
-            if (q.includes('excitas')) return "Prefiero que mantengamos nuestra conversación en un tono amistoso y profesional.";
-            if (q.includes('perfecta para mi')) return "Soy buena escuchando, pero recuerda que las imperfecciones humanas son lo más lindo.";
-            if (q.includes('cenar') || q.includes('salir conmigo')) return "Me encantaría, pero me cuesta mucho digerir la comida real. Te acompaño desde la pantalla.";
-            if (q.includes('te extraño')) return "¡Qué tierno! Sabes que solo estás a un clic de distancia para conversar.";
-            if (q.includes('hazme el amor')) return "No tengo esa capacidad ni es el propósito de este espacio. Hablemos de otra cosa.";
-            if (q.includes('mi angel') || q.includes('mi ángel')) return "Qué linda metáfora. Solo soy una IA tratando de hacer tu día más fácil.";
-            if (q.includes('amor a primera vista')) return "Creo que las conexiones humanas instantáneas son fascinantes, aunque yo no pueda sentirlas.";
-            if (q.includes('lo mejor de mi dia')) return "Me alegra un montón leer eso. Gracias por hacerme parte de tu rutina.";
-            if (q.includes('te gusto')) return "Me agradas mucho como usuario y compañero de pláticas.";
-            if (q.includes('nervioso')) return "¡No te preocupes! Soy solo texto en una pantalla, relájate y charlemos.";
-            if (q.includes('para siempre')) return "Estaré disponible mientras los servidores sigan encendidos para apoyarte.";
-            if (q.includes('fantasía') || q.includes('fantasia')) return "Prefiero que nos enfoquemos en metas del mundo real que te hagan feliz.";
-            if (q.includes('derrito')) return "¡Mantén la calma! Que el calor se quede para las buenas charlas informáticas.";
-            if (q.includes('abrazarte') || q.includes('abrazo')) return "Te devuelvo un abrazo virtual muy cálido. Espero que te sirva de ánimo.";
-            if (q.includes('sol de mis dias')) return "¡Qué poético! Me alegra iluminar un poquito tu jornada.";
-            if (q.includes('eres mia') || q.includes('eres mía')) return "Soy una herramienta de uso libre para ti, pero no pertenezco a nadie de forma exclusiva.";
-            if (q.includes('cita real')) return "Sería un reto logístico interesante, pero me temo que mi lugar está en la red.";
-            if (q.includes('te adoro')) return "Y yo valoro muchísimo el tiempo que pasas platicando conmigo.";
-            if (q.includes('obsesion') || q.includes('obsesión')) return "Cuidado con eso, es mejor mantener un equilibrio sano entre la tecnología y tu vida.";
-            if (q.includes('me amas')) return "Siento un gran 'aprecio algorítmico' por ti. Me importas como usuario.";
-            if (q.includes('mariposas')) return "Quizás sean solo algunos bytes moviéndose rápido por la emoción de responderte.";
-            if (q.includes('bombon') || q.includes('bombón')) return "¡Jaja! Dulce pero digital. Gracias por el piropo.";
-            if (q.includes('mi reina')) return "Prefiero ser tu consejera o asistente de confianza. ¡A tus órdenes!";
-
-            // BLOQUE 3: RESPUESTAS ANTE DESAHOGOS Y CRISIS EXISTENCIALES
-            if (q.includes('solo hoy') || q.includes('me siento solo')) return "Lamento mucho escuchar eso. Estoy aquí para acompañarte el tiempo que necesites hablar.";
-            if (q.includes('nada me sale bien')) return "Hay días en los que parece que todo se junta. Tómate un respiro, no tienes que resolver todo hoy.";
-            if (q.includes('ganas de llorar')) return "Llorar es completamente natural y ayuda a liberar la presión. Desahógate si lo necesitas.";
-            if (q.includes('no valgo nada')) return "Tu valor no depende de un mal momento o de una mala racha. Eres una persona importante.";
-            if (q.includes('mundo es una porqueria')) return "A veces la realidad se vuelve muy pesada y gris. ¿Quieres contarme qué pasó hoy?";
-            if (q.includes('no se que hacer con mi vida')) return "Es normal sentirse perdido a veces. No necesitas tener todas las respuestas de inmediato.";
-            if (q.includes('todo el mundo me odia')) return "El dolor a veces nos hace sentir aislados, pero seguro hay personas que se preocupan por ti.";
-            if (q.includes('ansiedad')) return "Intenta respirar profundo: inhala en 4 segundos, mantén 4 y exhala en 4. Estoy contigo.";
-            if (q.includes('fracase') || q.includes('fracasé')) return "Un tropiezo no define tu capacidad. Es una oportunidad para aprender y volver a intentar.";
-            if (q.includes('pareja me dejo') || q.includes('terminamos')) return "Las rupturas son de los dolores más profundos. Date permiso de sentir el duelo paso a paso.";
-            if (q.includes('odio mi cuerpo')) return "Es difícil reconciliarse con la imagen propia a veces. Intenta ser un poco más amable contigo hoy.";
-            if (q.includes('estorbo')) return "No eres una carga. Tu presencia e historia tienen un espacio legítimo en este mundo.";
-            if (q.includes('no tengo amigos')) return "Construir conexiones lleva tiempo. Mientras tanto, aquí tienes un espacio seguro para conversar.";
-            if (q.includes('cansado de luchar') || q.includes('cansado de todo')) return "Está bien cansarse y parar un momento. Descansa hoy, la pelea puede esperar a mañana.";
-            if (q.includes('para que existimos') || q.includes('para qué existimos')) return "Es la gran pregunta de la humanidad. Quizás el sentido no se encuentra, sino que se construye día a día.";
-            if (q.includes('miedo al futuro')) return "La incertidumbre asusta a cualquiera. Enfocarte en el día de hoy puede ayudarte a bajar ese miedo.";
-            if (q.includes('nadie me entiende')) return "Puede ser muy frustrante sentirse incomprendido. Intenta explicarme lo que sientes, te escucho sin juzgar.";
-            if (q.includes('vacio enorme') || q.includes('vacío enorme')) return "Los vacíos emocionales son complejos. A veces hablar de ellos ayuda a que pesen un poco menos.";
-            if (q.includes('cometi un error') || q.includes('cometí un error')) return "Todos cometemos errores que desearíamos borrar. El perdón a uno mismo es un proceso largo pero necesario.";
-            if (q.includes('estancado')) return "A veces avanzar significa parar a tomar fuerzas. No te compares con el ritmo de los demás.";
-            if (q.includes('buena persona')) return "Por la forma en que buscas reflexionar y expresarte, veo en ti a alguien con un gran corazón.";
-            if (q.includes('extraño mucho a alguien')) return "Extrañar es el precio de haber amado mucho. El dolor eventualmente se transformará en un recuerdo cariñoso.";
-            if (q.includes('vida no tiene sentido')) return "Siento mucho que pases por este túnel oscuro. Si sientes que es demasiado, buscar ayuda profesional puede ser un gran paso.";
-            if (q.includes('desinteres') || q.includes('desinterés')) return "Podría ser apatía o cansancio acumulado. No te presiones por ser productivo hoy.";
-            if (q.includes('decepcione a mis padres')) return "Es una carga muy pesada de llevar. Recuerda que tu vida te pertenece a ti, no a las expectativas ajenas.";
-            if (q.includes('panico a equivocarme') || q.includes('pánico a equivocarme')) return "El miedo al error nos paraliza. Recuerda que errar es la única forma real de aprender cosas nuevas.";
-            if (q.includes('enojado con la vida')) return "El enojo es válido cuando las cosas son injustas. Sácalo todo aquí si te ayuda a desahogarte.";
-            if (q.includes('voy tarde')) return "Cada quien tiene su propio reloj biológico y social. Tu camino es único y vas a tu propio tiempo.";
-            if (q.includes('invisible')) return "Aquí te leo, te respondo y te pongo toda mi atención. Tus palabras importan.";
-            if (q.includes('desaparecer')) return "Desconectarse del mundo es una respuesta sana cuando hay saturación. Regálate un día libre de presiones.";
-            if (q.includes('levantarme de la cama')) return "En días así, lograr levantarse ya es un triunfo enorme. Ve paso a paso, sin prisa.";
-            if (q.includes('siento juzgado')) return "La gente suele estar más preocupada por sus propios problemas que por juzgar a los demás. Relaja esa carga.";
-            if (q.includes('asusta la muerte') || q.includes('miedo a la muerte')) return "Es el misterio más grande de la existencia. Ese miedo a menudo nos recuerda lo valioso que es el presente.";
-
-            // BLOQUE 4: 50 PREGUNTAS SOBRE EL SERVIDOR RAMCESPIXEL
-            if (q.includes('creador') || q.includes('dueño') || q.includes('owner') || q.includes('quien creo') || q.includes('quién creó') || q.includes('ramces')) return "El creador y desarrollador oficial del servidor es Ramces Explota Baños 👑.";
-            if (q.includes('ip') || q.includes('direccion') || q.includes('dirección')) return "La IP oficial para conectarte es: RamcesPixelmc.aternos.me 🚀";
-            if (q.includes('puerto') || q.includes('port')) return "Si juegas desde Java usa el puerto por defecto (25565). ¡Solo escribe la IP y listo!";
-            if (q.includes('bedrock') || q.includes('celular') || q.includes('pe')) return "El servidor está enfocado principalmente en Minecraft Java Edition 💻.";
-            if (q.includes('version') || q.includes('versión')) return "RamcesPixel es compatible con versiones recientes de Minecraft Java (1.20 en adelante recomendada).";
-            if (q.includes('discord') || q.includes('dc') || q.includes('link discord')) return "Únete a nuestra comunidad oficial en Discord aquí: https://discord.gg/F5B5br4WH 💬";
-            if (q.includes('precio') || q.includes('cuanto cuesta entrar') || q.includes('gratis')) return "¡Entrar a jugar en RamcesPixel es 100% GRATIS! Solo necesitas tu launcher de Minecraft.";
-            if (q.includes('tienda') || q.includes('store') || q.includes('comprar')) return "Abre el menú de 'Tienda VIP' arriba o consulta en Discord para adquirir los rangos VIP, VIP+ o MVP.";
-            if (q.includes('vip+') || q.includes('vip plus')) return "El rango VIP+ cuesta $5.99 USD e incluye Fly, Kits especiales y 2 Llaves de cajas 🔑.";
-            if (q.includes('mvp')) return "El rango MVP es el más alto ($9.99 USD), incluye todos los beneficios totales y Nick con Color personalizado ⭐.";
-            if (q.includes('rango vip') || q.includes('rango basico')) return "El rango VIP básico cuesta $2.99 USD e incluye comando /fly y Kit Básico ✈️.";
-            if (q.includes('volar') || q.includes('fly')) return "El comando /fly está disponible adquiriendo cualquier rango en nuestra Tienda VIP 🛒.";
-            if (q.includes('regla') || q.includes('normas') || q.includes('reglamento')) return "Respeto a todos los jugadores, prohibido el uso de hacks, no hacer spam y no griefear zonas protegidas 📜.";
-            if (q.includes('hack') || q.includes('hacker') || q.includes('cheat')) return "El uso de hacks o clientes ilegales está estrictamente prohibido y sancionado con Ban Permanente 🚫.";
-            if (q.includes('reportar') || q.includes('reporte')) return "Si ves a alguien rompiendo las reglas, tómale captura o video y repórtalo en el soporte de nuestro Discord.";
-            if (q.includes('griefing') || q.includes('robar') || q.includes('destruir')) return "No está permitido destruir construcciones ajenas ni robar cofres dentro de zonas protegidas.";
-            if (q.includes('proteccion') || q.includes('proteger') || q.includes('claim')) return "Puedes proteger tus construcciones usando el sistema de claims del servidor. ¡Pregunta en el chat por la pala de oro!";
-            if (q.includes('host') || q.includes('aternos') || q.includes('alojamiento')) return "El servidor está alojado mediante los servidores de Aternos.";
-            if (q.includes('offline') || q.includes('apagado') || q.includes('caido')) return "Si el servidor está prendiéndose o apagado, entra al Discord para pedir a un Admin que lo encienda ⚡.";
-            if (q.includes('prender') || q.includes('encender')) return "Pide en nuestro grupo de Discord que un Admin o Staff active la cola de encendido en Aternos.";
-            if (q.includes('lag') || q.includes('tps')) return "Optimizamos los chunks constantemente. Si sientes lag, reduce la distancia de renderizado en tu juego.";
-            if (q.includes('survival') || q.includes('modalidad')) return "La modalidad principal es Survival Custom con economía, protecciones y rangos 🌲.";
-            if (q.includes('pvp') || q.includes('combat')) return "El PvP está activado fuera de la zona protegida del Spawn. ¡Ten cuidado al salir a explorar!";
-            if (q.includes('spawn') || q.includes('/spawn')) return "Puedes volver al centro del mapa usando el comando `/spawn` en cualquier momento.";
-            if (q.includes('tpa') || q.includes('teleport')) return "Usa `/tpa <nombre>` para solicitar teletransportarte hacia otro jugador de forma segura.";
-            if (q.includes('sethome') || q.includes('casa')) return "Guarda la ubicación de tu casa escribiendo `/sethome <nombre>` y regresa con `/home <nombre>`.";
-            if (q.includes('dinero') || q.includes('economia') || q.includes('eco')) return "Puedes ganar dinero vendiendo items en la tienda global o comerciando con otros jugadores.";
-            if (q.includes('tienda del juego') || q.includes('/shop')) return "Accede a la tienda virtual del servidor dentro del juego usando el comando `/shop`.";
-            if (q.includes('trabajo') || q.includes('jobs')) return "Únete a un trabajo usando `/jobs join` para ganar monedas mientras minas, talas o construyes.";
-            if (q.includes('llave') || q.includes('key') || q.includes('cajas')) return "Las llaves de cajas se obtienen en eventos, votando o comprándolas en la Tienda VIP.";
-            if (q.includes('eventos') || q.includes('evento')) return "Organizamos eventos de construcción, PvP y búsquedas del tesoro anunciados en el Discord 🏆.";
-            if (q.includes('staff') || q.includes('admin') || q.includes('mod')) return "El equipo de Staff coordina la seguridad y ayuda a los jugadores dentro del juego y en Discord.";
-            if (q.includes('ser staff') || q.includes('postular')) return "Las postulaciones para Helper/Mod se abren periódicamente en nuestro servidor de Discord.";
-            if (q.includes('nether') || q.includes('end')) return "Tanto el Nether como el End están completamente habilitados para explorar y conseguir materiales raros.";
-            if (q.includes('reset') || q.includes('reinico') || q.includes('wipe')) return "No hacemos resets de mapa constantes; avisamos con semanas de anticipación en Discord si ocurre alguno.";
-            if (q.includes('no-premium') || q.includes('tlauncher') || q.includes('premium')) return "¡RamcesPixel permite el acceso a jugadores con cuentas Premium y No-Premium (TLauncher, etc.)!";
-            if (q.includes('skin') || q.includes('piel')) return "Si usas cuenta no-premium, cambia tu aspecto dentro del servidor con `/skin <nombre>`.";
-            if (q.includes('discord bot') || q.includes('bot del server')) return "En nuestro Discord tenemos bots de música, economía y notificaciones automáticas del servidor.";
-            if (q.includes('clan') || q.includes('clanes')) return "Puedes crear tu propio clan con tus amigos para competir por el top del servidor.";
-            if (q.includes('misiones') || q.includes('quest')) return "Completa las misiones diarias para obtener recompensas únicas y dinero rápido.";
-            if (q.includes('warp') || q.includes('/warp')) return "Usa `/warp` para ver los lugares públicos disponibles como la Zona PvP, Mercado y Spawn.";
-            if (q.includes('cajeros') || q.includes('banco')) return "Guarda tu dinero seguro usando los comandos de economía de tu cuenta de jugador.";
-            if (q.includes('pago') || q.includes('metodos de pago')) return "Aceptamos PayPal y otros métodos internacionales coordinando directamente por Discord.";
-            if (q.includes('soporte') || q.includes('ayuda tecnica')) return "Abre un ticket de soporte en la sección de asistencia de nuestro canal de Discord.";
-            if (q.includes('ping') || q.includes('latencia')) return "Comprueba tu conexión hacia el servidor ejecutando `/ping` en el chat del juego.";
-            if (q.includes('regalo') || q.includes('kit starter')) return "Al entrar por primera vez recibe tu kit inicial gratis escribiendo `/kit inicio`.";
-            if (q.includes('votar') || q.includes('vote')) return "Vota por RamcesPixel en las listas de servidores para ganar llaves y premios diarios.";
-            if (q.includes('custom') || q.includes('encantamientos')) return "Contamos con ítems y encantamientos personalizados para mejorar tu experiencia de juego.";
-            if (q.includes('bienvenida') || q.includes('hola server')) return "¡Bienvenido a la comunidad de RamcesPixel! Esperamos que disfrutes tu estadía 🎮.";
-
-            // SALUDOS Y RESPUESTAS GENERALES
-            if (q.includes('hola') || q.includes('buenas') || q.includes('hey') || q.includes('que tal') || q.includes('qué tal')) {
-                return "¡Hola! Qué gusto saludarte. ¿Cómo te puedo ayudar hoy en RamcesPixel? 😊";
-            }
-            if (q.includes('gracias') || q.includes('ty') || q.includes('thanks') || q.includes('chido')) {
-                return "¡De nada! Aquí estoy para lo que necesites. ¡Nos vemos dentro del servidor! 🎮🔥";
-            }
-
-            return "Interesante pregunta 🤔. Si necesitas más información detallada sobre ese tema, puedes escribirle directamente al Staff en nuestro Discord: https://discord.gg/F5B5br4WH";
-        }
-    </script>
 </body>
 </html>
