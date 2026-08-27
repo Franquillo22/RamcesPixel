@@ -14,13 +14,19 @@
             --bg-color: #090d16;
             --panel-bg: rgba(18, 25, 44, 0.95);
             --primary: #ff9d00;
-            --primary-hover: #ffb700;
             --text-color: #ffffff;
             --accent-discord: #5865F2;
-            --brightness: 100%;
+            --subtext: #aaaaaa;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; filter: brightness(var(--brightness)); }
+        body.light-theme {
+            --bg-color: #f4f6f9;
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #1a1a1a;
+            --subtext: #555555;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
         
         body { 
             min-height: 100vh; 
@@ -34,7 +40,7 @@
 
         /* HEADER & NAVBAR */
         header { 
-            background: #12192c; 
+            background: var(--panel-bg); 
             padding: 15px 40px; 
             display: flex; 
             justify-content: space-between; 
@@ -51,7 +57,7 @@
         .logo-text { font-size: 1.6rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
 
         nav { display: flex; gap: 20px; align-items: center; }
-        nav a { color: #fff; text-decoration: none; font-weight: 600; transition: 0.3s; cursor: pointer; }
+        nav a { color: var(--text-color); text-decoration: none; font-weight: 600; cursor: pointer; }
         nav a:hover { color: var(--primary); }
 
         .user-controls { display: flex; gap: 10px; align-items: center; }
@@ -80,10 +86,10 @@
         }
 
         .hero h1 { font-size: 2.8rem; color: var(--primary); margin-bottom: 15px; }
-        .hero p { font-size: 1.1rem; color: #ccc; margin-bottom: 25px; }
+        .hero p { font-size: 1.1rem; color: var(--subtext); margin-bottom: 25px; }
         
         .server-ip-box { 
-            background: #090d16; 
+            background: var(--bg-color); 
             padding: 12px 25px; 
             border-radius: 10px; 
             border: 2px dashed var(--primary); 
@@ -92,46 +98,44 @@
             font-size: 1.3rem; 
             color: #00d4ff;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .server-ip-box:hover { background: #12192c; }
 
         /* TIENDA */
         .section-title { font-size: 2rem; color: var(--primary); margin-bottom: 20px; text-align: center; }
         .grid-store { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 900px; }
-        .card-item { background: var(--panel-bg); border: 1px solid rgba(255,157,0,0.3); border-radius: 12px; padding: 25px; text-align: center; transition: 0.3s; }
+        .card-item { background: var(--panel-bg); border: 1px solid rgba(255,157,0,0.3); border-radius: 12px; padding: 25px; text-align: center; }
         .card-item:hover { border-color: var(--primary); transform: translateY(-5px); }
         .card-price { font-size: 1.4rem; color: #00d4ff; font-weight: bold; margin: 10px 0; }
 
-        /* REPRODUCTOR DE MÚSICA & AJUSTES DE BRILLO */
+        /* WIDGETS DE AJUSTES Y MÚSICA */
         .widgets-bar { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 900px; }
-        .widget-box { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; flex: 1; min-width: 250px; text-align: center; }
+        .widget-box { background: var(--panel-bg); border: 1px solid rgba(255,157,0,0.2); border-radius: 12px; padding: 20px; flex: 1; min-width: 250px; text-align: center; }
 
-        /* ASISTENTE IA (WIDGET FLOTANTE) */
+        /* ASISTENTE IA */
         .ai-chat-btn { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); border: none; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 99; }
-        .ai-chat-window { display: none; position: fixed; bottom: 95px; right: 25px; width: 320px; height: 420px; background: #12192c; border: 2px solid var(--primary); border-radius: 15px; flex-direction: column; overflow: hidden; z-index: 99; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .ai-chat-window { display: none; position: fixed; bottom: 95px; right: 25px; width: 330px; height: 440px; background: var(--panel-bg); border: 2px solid var(--primary); border-radius: 15px; flex-direction: column; overflow: hidden; z-index: 99; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .ai-chat-header { background: var(--primary); color: #000; padding: 12px; font-weight: bold; text-align: center; }
         .ai-chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
-        .ai-msg { padding: 8px 12px; border-radius: 8px; max-width: 80%; }
-        .ai-msg.bot { background: #1c2744; align-self: flex-start; }
+        .ai-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; word-wrap: break-word; }
+        .ai-msg.bot { background: #1c2744; color: #fff; align-self: flex-start; }
         .ai-msg.user { background: var(--primary); color: #000; align-self: flex-end; }
         .ai-chat-input { display: flex; border-top: 1px solid #333; }
-        .ai-chat-input input { flex: 1; padding: 10px; border: none; background: #090d16; color: #fff; outline: none; }
+        .ai-chat-input input { flex: 1; padding: 10px; border: none; background: var(--bg-color); color: var(--text-color); outline: none; }
         .ai-chat-input button { padding: 10px 15px; background: var(--primary); border: none; cursor: pointer; font-weight: bold; }
 
-        /* MODAL DE LOGIN */
+        /* MODAL */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
-        .modal-content { background: #12192c; padding: 35px; border-radius: 16px; border: 2px solid var(--primary); width: 90%; max-width: 420px; text-align: center; }
+        .modal-content { background: var(--panel-bg); padding: 35px; border-radius: 16px; border: 2px solid var(--primary); width: 90%; max-width: 420px; text-align: center; }
 
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--primary); background: #090d16; color: #fff; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--primary); background: var(--bg-color); color: var(--text-color); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR PERMANENTE CON LOGO Y NAVEGACIÓN -->
+    <!-- NAVBAR PERMANENTE CON LOGO, IDIOMAS Y NAVEGACIÓN -->
     <header>
         <div class="logo-container">
             <div class="logo-icon">R</div>
@@ -139,10 +143,17 @@
         </div>
         
         <nav>
-            <a href="#inicio">Inicio</a>
-            <a href="#tienda">Tienda</a>
-            <a href="#ajustes">Ajustes</a>
+            <a href="#inicio" id="nav-home">Inicio</a>
+            <a href="#tienda" id="nav-store">Tienda</a>
+            <a href="#ajustes" id="nav-settings">Ajustes</a>
             <a href="https://discord.com/oauth2/authorize?client_id=1542606598084497418&response_type=token&redirect_uri=https%3A%2F%2Ffranquillo22.github.io%2FRamcesPixel%2F&scope=identify" target="_blank">Discord</a>
+            
+            <!-- SELECTOR DE IDIOMA -->
+            <select id="langSelect" onchange="changeLanguage(this.value)" style="width: auto; padding: 5px 8px; margin: 0; background: var(--bg-color); color: var(--text-color);">
+                <option value="es-MX">🇲🇽 Español (MX)</option>
+                <option value="en-US">🇺🇸 English (USA)</option>
+                <option value="fr-FR">🇫🇷 Français</option>
+            </select>
         </nav>
 
         <div class="user-controls">
@@ -155,33 +166,33 @@
     <main>
         <!-- HÉROE / INICIO -->
         <section class="hero" id="inicio">
-            <h1>RamcesPixel Network</h1>
-            <p>Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)</p>
+            <h1 id="hero-title">RamcesPixel Network</h1>
+            <p id="hero-sub">Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)</p>
             <div class="server-ip-box" onclick="copiarIP()">play.ramcespixel.net</div>
-            <p style="font-size: 0.85rem; color: #888; margin-top: 8px;">(Haz clic para copiar la IP)</p>
+            <p style="font-size: 0.85rem; color: var(--subtext); margin-top: 8px;" id="hero-copy-hint">(Haz clic para copiar la IP)</p>
         </section>
 
         <!-- TIENDA -->
         <section id="tienda" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            <h2 class="section-title">🛒 Tienda de Rangos</h2>
+            <h2 class="section-title" id="store-title">🛒 Tienda de Rangos</h2>
             <div class="grid-store">
                 <div class="card-item">
                     <h3>Rango VIP</h3>
                     <div class="card-price">$2.99 USD</div>
-                    <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Kits especiales, vuelo en lobby y prefijo en el chat.</p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('VIP')">Comprar</button>
+                    <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;" id="vip-desc">Kits especiales, vuelo en lobby y prefijo en el chat.</p>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('VIP')" id="btn-buy-1">Comprar</button>
                 </div>
                 <div class="card-item">
                     <h3>Rango VIP+</h3>
                     <div class="card-price">$5.99 USD</div>
-                    <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Todos los beneficios VIP + 2 accesos a parcelas extras.</p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('VIP+')">Comprar</button>
+                    <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;" id="vipp-desc">Todos los beneficios VIP + 2 accesos a parcelas extras.</p>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('VIP+')" id="btn-buy-2">Comprar</button>
                 </div>
                 <div class="card-item">
                     <h3>Rango SVIP</h3>
                     <div class="card-price">$9.99 USD</div>
-                    <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Rango definitivo con cosméticos exclusivos y múltiples kits.</p>
-                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('SVIP')">Comprar</button>
+                    <p style="font-size: 0.85rem; color: var(--subtext); margin-bottom: 15px;" id="svip-desc">Rango definitivo con cosméticos exclusivos y múltiples kits.</p>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="comprarRango('SVIP')" id="btn-buy-3">Comprar</button>
                 </div>
             </div>
         </section>
@@ -189,23 +200,24 @@
         <!-- WIDGETS DE AJUSTES Y MÚSICA -->
         <section class="widgets-bar" id="ajustes">
             <div class="widget-box">
-                <h3 style="color: var(--primary); margin-bottom: 10px;">☀️ Control de Brillo</h3>
-                <input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="cambiarBrillo(this.value)">
+                <h3 style="color: var(--primary); margin-bottom: 10px;" id="theme-heading">🎨 Tema de la Página</h3>
+                <button class="btn btn-primary" onclick="toggleTheme()" id="themeBtn">🌙 Modo Oscuro</button>
             </div>
             <div class="widget-box">
-                <h3 style="color: var(--primary); margin-bottom: 10px;">🎵 Música del Servidor</h3>
+                <h3 style="color: var(--primary); margin-bottom: 10px;" id="music-heading">🎷 Jazz Tranquilo (Lofi)</h3>
                 <button class="btn btn-primary" onclick="toggleMusica()" id="musicBtn">▶️ Reproducir Música</button>
-                <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+                <!-- STREAM REPRODUCTOR DE JAZZ TRANQUILO -->
+                <audio id="bgMusic" loop src="https://stream.zeno.fm/f3wvbbqmdg8uv"></audio>
             </div>
         </section>
     </main>
 
-    <!-- BOTÓN Y VENTANA DE ASISTENTE IA -->
+    <!-- BOTÓN Y VENTANA DE ASISTENTE IA (GEMINI API) -->
     <button class="ai-chat-btn" onclick="toggleAIChat()">🤖</button>
     <div class="ai-chat-window" id="aiChatWindow">
-        <div class="ai-chat-header">Asistente RamcesPixel</div>
+        <div class="ai-chat-header" id="ai-header">Asistente RamcesPixel (Gemini AI)</div>
         <div class="ai-chat-messages" id="aiMessages">
-            <div class="ai-msg bot">¡Hola! Soy tu asistente. ¿Tienes dudas sobre cómo entrar o comprar rangos?</div>
+            <div class="ai-msg bot">¡Hola! Soy tu asistente de RamcesPixel. ¿En qué te puedo ayudar hoy?</div>
         </div>
         <div class="ai-chat-input">
             <input type="text" id="aiInput" placeholder="Escribe un mensaje..." onkeypress="handleAIPress(event)">
@@ -219,7 +231,7 @@
             <h2 style="color: var(--primary); margin-bottom: 15px;">🔐 Iniciar Sesión</h2>
             
             <div id="authStep1">
-                <p style="font-size:0.9rem; margin-bottom:15px; color:#ccc;">Elige tu proveedor de inicio de sesión:</p>
+                <p style="font-size:0.9rem; margin-bottom:15px; color:var(--subtext);">Elige tu proveedor de inicio de sesión:</p>
                 <button class="btn btn-google" style="width: 100%; margin-bottom: 10px;" onclick="loginWithGoogle()">🌐 Entrar con Google</button>
                 <button class="btn btn-discord" style="width: 100%;" onclick="loginWithDiscord()">🎮 Entrar con Discord</button>
             </div>
@@ -237,13 +249,16 @@
                 </form>
             </div>
             
-            <button style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;" onclick="closeModal('authModal')">Cancelar</button>
+            <button style="background:none; border:none; color:var(--subtext); margin-top:15px; cursor:pointer;" onclick="closeModal('authModal')">Cancelar</button>
         </div>
     </div>
 
     <!-- LÓGICA JAVASCRIPT -->
     <script>
-        // --- 1. FIREBASE CONFIG ---
+        // API KEY DE GEMINI CONFIGURADA
+        const GEMINI_API_KEY = "AQ.Ab8RN6JrO7yFEiop_tu5zfe04vNXUE-JZq9hjHrI8MZlmhW_0g";
+
+        // --- 1. FIREBASE CONFIG REAL ---
         const firebaseConfig = {
             apiKey: "AIzaSyAg8cND_1e8MaY3i9YDoIBUfSQON9LQSck",
             authDomain: "ramces-pixel.firebaseapp.com",
@@ -270,7 +285,7 @@
             window.location.href = discordUrl;
         }
 
-        // --- 2. VERIFICACIÓN DE NICK MINECRAFT CORREGIDA ---
+        // --- 2. VERIFICADOR DE NICK DE MINECRAFT ---
         async function validarYGuardarNick(e) {
             e.preventDefault();
             const edition = document.getElementById('mcEdition').value;
@@ -281,7 +296,7 @@
             if (!nick) return;
 
             statusMsg.style.color = '#ff9d00';
-            statusMsg.textContent = 'Verificando con Mojang...';
+            statusMsg.textContent = 'Verificando datos con Mojang...';
             btnVerify.disabled = true;
 
             if (edition === 'java') {
@@ -298,7 +313,7 @@
                         }
                     }
                 } catch (err) {
-                    esValida = true; // No bloquear al usuario si hay un fallo de red público
+                    esValida = true;
                 }
 
                 if (!esValida) {
@@ -325,7 +340,7 @@
             statusMsg.textContent = '';
         }
 
-        // --- 3. GESTIÓN DE INTERFAZ & CERRAR SESIÓN ---
+        // --- 3. ESTADO DE USUARIO & CERRAR SESIÓN ---
         function actualizarInterfazUsuario(nick, edition) {
             const icon = edition === 'bedrock' ? '📱' : '💻';
             const userBtn = document.getElementById('userBtn');
@@ -357,11 +372,106 @@
             document.getElementById('authStep2').style.display = 'block';
         }
 
-        // --- 4. FUNCIONES EXTRA (Brillo, Música, IP, Asistente) ---
-        function cambiarBrillo(val) {
-            document.documentElement.style.setProperty('--brightness', val + '%');
+        // --- 4. TRADUCCIONES E IDIOMAS (ES, EN, FR) ---
+        const translations = {
+            'es-MX': {
+                home: 'Inicio', store: 'Tienda', settings: 'Ajustes',
+                title: 'RamcesPixel Network', sub: 'Servidor compatible con Minecraft Java Edition & Bedrock (Móvil/Consolas)',
+                copyHint: '(Haz clic para copiar la IP)', storeTitle: '🛒 Tienda de Rangos', buy: 'Comprar',
+                themeHead: '🎨 Tema de la Página', musicHead: '🎷 Jazz Tranquilo (Lofi)', login: '👤 Iniciar Sesión'
+            },
+            'en-US': {
+                home: 'Home', store: 'Store', settings: 'Settings',
+                title: 'RamcesPixel Network', sub: 'Compatible server for Minecraft Java Edition & Bedrock (Mobile/Consoles)',
+                copyHint: '(Click to copy IP)', storeTitle: '🛒 Rank Store', buy: 'Buy',
+                themeHead: '🎨 Theme Mode', musicHead: '🎷 Smooth Jazz (Lofi)', login: '👤 Log In'
+            },
+            'fr-FR': {
+                home: 'Accueil', store: 'Boutique', settings: 'Paramètres',
+                title: 'Réseau RamcesPixel', sub: 'Serveur compatible pour Minecraft Java Edition et Bedrock (Mobile/Consoles)',
+                copyHint: '(Cliquez pour copier l\'IP)', storeTitle: '🛒 Boutique de Rangs', buy: 'Acheter',
+                themeHead: '🎨 Mode Thème', musicHead: '🎷 Jazz Paisible (Lofi)', login: '👤 Se Connecter'
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            
+            document.getElementById('nav-home').textContent = t.home;
+            document.getElementById('nav-store').textContent = t.store;
+            document.getElementById('nav-settings').textContent = t.settings;
+            document.getElementById('hero-title').textContent = t.title;
+            document.getElementById('hero-sub').textContent = t.sub;
+            document.getElementById('hero-copy-hint').textContent = t.copyHint;
+            document.getElementById('store-title').textContent = t.storeTitle;
+            document.getElementById('btn-buy-1').textContent = t.buy;
+            document.getElementById('btn-buy-2').textContent = t.buy;
+            document.getElementById('btn-buy-3').textContent = t.buy;
+            document.getElementById('theme-heading').textContent = t.themeHead;
+            document.getElementById('music-heading').textContent = t.musicHead;
+            
+            if (!localStorage.getItem('mc_nick')) {
+                document.getElementById('userBtn').textContent = t.login;
+            }
         }
 
+        // --- 5. TEMA MODO CLARO / OSCURO ---
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                btn.textContent = '🌙 Modo Oscuro';
+            } else {
+                body.classList.add('light-theme');
+                btn.textContent = '☀️ Modo Claro';
+            }
+        }
+
+        // --- 6. ASISTENTE IA INTEGRADOR CON GEMINI API ---
+        function toggleAIChat() {
+            const win = document.getElementById('aiChatWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleAIPress(e) { if (e.key === 'Enter') sendAIMessage(); }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const container = document.getElementById('aiMessages');
+            container.innerHTML += `<div class="ai-msg user">${msg}</div>`;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            const loadingId = 'loading-' + Date.now();
+            container.innerHTML += `<div class="ai-msg bot" id="${loadingId}">Pensando...</div>`;
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: `Eres el asistente oficial del servidor de Minecraft RamcesPixel (IP: play.ramcespixel.net). Responde amablemente y en pocas palabras. Usuario dice: ${msg}` }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                const reply = data.candidates[0].content.parts[0].text;
+                document.getElementById(loadingId).textContent = reply;
+            } catch (err) {
+                document.getElementById(loadingId).textContent = "Hola, soy el asistente de RamcesPixel. Para entrar usa la IP: play.ramcespixel.net";
+            }
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- 7. MÚSICA & UTILIDADES ---
         function toggleMusica() {
             const audio = document.getElementById('bgMusic');
             const btn = document.getElementById('musicBtn');
@@ -385,37 +495,10 @@
                 alert('Debes iniciar sesión y vincular tu Nick de Minecraft primero.');
                 openModal('authModal');
             } else {
-                alert(`Redirigiendo al checkout para comprar el rango ${rango} para la cuenta: ${nick}`);
+                alert(`Redirigiendo al checkout para el rango ${rango} del usuario ${nick}...`);
             }
         }
 
-        // Asistente IA
-        function toggleAIChat() {
-            const win = document.getElementById('aiChatWindow');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function handleAIPress(e) { if (e.key === 'Enter') sendAIMessage(); }
-
-        function sendAIMessage() {
-            const input = document.getElementById('aiInput');
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            const container = document.getElementById('aiMessages');
-            container.innerHTML += `<div class="ai-msg user">${msg}</div>`;
-            input.value = '';
-
-            setTimeout(() => {
-                let reply = "Para jugar ingresa la IP: play.ramcespixel.net. ¡Recuerda vincular tu nick!";
-                if (msg.toLowerCase().includes('hola')) reply = "¡Hola! ¿En qué te puedo ayudar hoy sobre el servidor?";
-                if (msg.toLowerCase().includes('rango') || msg.toLowerCase().includes('tienda')) reply = "Puedes ver nuestros rangos VIP en la sección de la Tienda.";
-                container.innerHTML += `<div class="ai-msg bot">${reply}</div>`;
-                container.scrollTop = container.scrollHeight;
-            }, 600);
-        }
-
-        // Inicialización
         window.addEventListener('load', () => {
             const hash = window.location.hash;
             if (hash.includes('access_token')) {
