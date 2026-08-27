@@ -3,154 +3,789 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RamcesPixel - Tienda Oficial</title>
+    <title>RamcesPixel - Servidor de Minecraft</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: #090d16; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background: #12192c; border: 2px solid #ff9d00; border-radius: 12px; padding: 30px; max-width: 480px; width: 100%; text-align: center; }
-        h1 { color: #ff9d00; margin-bottom: 20px; }
-        
-        .form-group { text-align: left; margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #00d4ff; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ff9d00; background: #0b101d; color: #fff; outline: none; }
-        
-        .row { display: flex; gap: 10px; }
-        .row .form-group { flex: 1; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
 
-        .btn-pay { background: linear-gradient(135deg, #ff9d00, #e67e00); color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; font-size: 1rem; margin-top: 10px; }
-        .btn-pay:hover { opacity: 0.9; }
+        /* TEMA OSCURO */
+        body.dark-theme {
+            background: radial-gradient(circle at center, #1a233a 0%, #090d16 100%);
+            color: #ffffff;
+        }
 
-        .error-msg { background: #ff4d4d; color: #fff; padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; display: none; text-align: left; }
+        body.dark-theme .container {
+            background: rgba(18, 25, 44, 0.92);
+            border: 3px solid #ff9d00;
+            box-shadow: 0 0 30px rgba(255, 157, 0, 0.35);
+        }
+
+        body.dark-theme .ip-card {
+            background: #0f172a;
+            border: 2px dashed #00a2ff;
+        }
+
+        body.dark-theme .modal-content, body.dark-theme .chat-window {
+            background: #12192c;
+            color: #fff;
+            border: 2px solid #ff9d00;
+        }
+
+        body.dark-theme .chat-messages {
+            background: #0b101d;
+        }
+
+        body.dark-theme .msg-bot {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        /* TEMA CLARO */
+        body.light-theme {
+            background: radial-gradient(circle at center, #e0e8f5 0%, #b8c9e8 100%);
+            color: #1a1a1a;
+        }
+
+        body.light-theme .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #e67e00;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .ip-card {
+            background: #eef4ff;
+            border: 2px dashed #0077cc;
+        }
+
+        body.light-theme p {
+            color: #4a5568 !important;
+        }
+
+        body.light-theme .modal-content, body.light-theme .chat-window {
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 2px solid #e67e00;
+        }
+
+        body.light-theme .chat-messages {
+            background: #f1f5f9;
+        }
+
+        body.light-theme .msg-bot {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-settings {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        body.light-theme .btn-settings {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .container {
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            position: relative;
+        }
+
+        .logo-header {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #ff9d00;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #c0d8f0;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .ip-card {
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        .ip-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00d4ff;
+            letter-spacing: 1px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-discord {
+            background: linear-gradient(135deg, #5865F2, #404EED);
+            color: #ffffff;
+        }
+
+        .btn-discord:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
+        }
+
+        .btn-tienda {
+            background: linear-gradient(135deg, #ff9d00, #e67e00);
+            color: #ffffff;
+        }
+
+        .btn-tienda:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 157, 0, 0.6);
+        }
+
+        .btn-buy-item {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-buy-item:hover {
+            background: #00a2ff;
+            color: #fff;
+        }
+
+        /* MODALES */
+        .modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff9d00;
+        }
+
+        .store-item {
+            background: rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,157,0,0.4);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+
+        /* FORMULARIO DE TARJETA AVANZADO */
+        .card-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .card-form label {
+            font-size: 0.8rem;
+            color: #00d4ff;
+        }
+
+        .card-form input, .card-form select {
+            width: 100%;
+            padding: 9px;
+            border-radius: 6px;
+            border: 1px solid #ff9d00;
+            background: rgba(0,0,0,0.3);
+            color: inherit;
+            outline: none;
+        }
+
+        .card-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-row > div {
+            flex: 1;
+        }
+
+        .error-msg {
+            background: #ff4d4d;
+            color: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+            text-align: left;
+        }
+
+        /* WIDGET DEL CHATBOT AI */
+        .ai-fab {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #00d4ff, #0077cc);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 99;
+        }
+
+        .ai-fab:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 340px;
+            height: 450px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .chat-window.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-header {
+            background: #ff9d00;
+            color: #000;
+            padding: 12px 15px;
+            font-weight: bold;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .msg-user {
+            background: #0077cc;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-bot {
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #ff9d00;
+            background: rgba(0,0,0,0.2);
+            color: inherit;
+            outline: none;
+        }
+
+        .chat-send {
+            background: #ff9d00;
+            border: none;
+            color: black;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body>
+<body class="dark-theme">
 
-<div class="container">
-    <h1>💳 Pasarela de Pago VIP</h1>
-    <div id="errorBox" class="error-msg"></div>
+    <div class="top-bar">
+        <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
+    </div>
 
-    <form id="paymentForm" onsubmit="validarYProcesar(event)">
-        <div class="form-group">
-            <label>Usuario de Minecraft (Nick):</label>
-            <input type="text" id="mcUser" placeholder="Tu nick exacto" required>
+    <!-- PÁGINA PRINCIPAL -->
+    <div class="container">
+        <img src="logo.jpg" alt="RamcesPixel Logo" class="logo-header" onerror="this.src='logo.png';">
+        <h1>¡Bienvenido a RamcesPixel!</h1>
+        <p id="txt-sub">Hecho Por Ramces Explota Baños</p>
+
+        <div class="ip-card">
+            <span class="ip-text">RamcesPixelmc.aternos.me</span>
         </div>
 
-        <div class="row">
-            <div class="form-group">
-                <label>Tipo de Tarjeta:</label>
-                <select id="cardType" required>
-                    <option value="visa_debito">Visa Débito</option>
-                    <option value="visa_credito">Visa Crédito</option>
-                    <option value="mastercard_debito">Mastercard Débito</option>
-                    <option value="mastercard_credito">Mastercard Crédito</option>
-                </select>
+        <div class="buttons-container">
+            <a href="https://discord.gg/F5B5br4WH" target="_blank" class="btn btn-discord" id="btn-discord">Unirse al Discord</a>
+            <button class="btn btn-tienda" onclick="openModal('shopModal')" id="btn-shop">Tienda VIP</button>
+        </div>
+    </div>
+
+    <!-- BOTÓN Y CHAT DE IA -->
+    <button class="ai-fab" onclick="toggleChat()" title="Asistente RamcesAI">🤖</button>
+
+    <div id="aiChat" class="chat-window">
+        <div class="chat-header">
+            <span>🤖 RamcesAI - Asistente</span>
+            <span style="cursor:pointer;" onclick="toggleChat()">&times;</span>
+        </div>
+        <div class="chat-messages" id="chatMsgs">
+            <div class="msg msg-bot">¡Hola! Soy RamcesAI 👋. Estoy aquí para ayudarte con cualquier duda sobre el servidor o para platicar. ¡Pregúntame lo que quieras!</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+            <button class="chat-send" onclick="sendMsg()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- VENTANA TIENDA VIP -->
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('shopModal')">&times;</span>
+            <h2 id="shop-title" style="color: #ff9d00; margin-bottom: 15px;">🛒 Tienda VIP RamcesPixel</h2>
+            
+            <div class="store-item">
+                <div>
+                    <strong>Rango VIP</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Fly + Kit Básico</p>
+                    <span style="color: #00d4ff; font-weight: bold;">$2.99 USD</span>
+                </div>
+                <button class="btn-buy-item" onclick="openCheckout('Rango VIP', '2.99')">Comprar</button>
             </div>
-            <div class="form-group">
-                <label>Código Postal (CP):</label>
-                <input type="text" id="zipCode" placeholder="Ej. 72000" maxlength="5" pattern="\d{5}" required>
+
+            <div class="store-item">
+                <div>
+                    <strong>Rango VIP+</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Fly + Kits + 2 Llaves</p>
+                    <span style="color: #00d4ff; font-weight: bold;">$5.99 USD</span>
+                </div>
+                <button class="btn-buy-item" onclick="openCheckout('Rango VIP+', '5.99')">Comprar</button>
+            </div>
+
+            <div class="store-item">
+                <div>
+                    <strong>Rango MVP</strong>
+                    <p style="font-size: 0.8rem; margin:0;">Beneficios Totales + Nick Color</p>
+                    <span style="color: #00d4ff; font-weight: bold;">$9.99 USD</span>
+                </div>
+                <button class="btn-buy-item" onclick="openCheckout('Rango MVP', '9.99')">Comprar</button>
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            <label>Número de Tarjeta (16 dígitos):</label>
-            <input type="text" id="cardNumber" placeholder="4000 0000 0000 0000" maxlength="19" required>
+    <!-- VENTANA PASARELA DE PAGO / TARJETA -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('checkoutModal')">&times;</span>
+            <h2 style="color: #ff9d00; margin-bottom: 5px;">💳 Pasarela de Pago VIP</h2>
+            <p id="checkout-item-desc" style="font-size:0.9rem; margin-bottom:10px; color:#00d4ff;"></p>
+
+            <div id="errorBox" class="error-msg"></div>
+
+            <form class="card-form" onsubmit="validarYProcesar(event)">
+                <div>
+                    <label>Usuario de Minecraft (Nick):</label>
+                    <input type="text" id="mcUser" placeholder="Tu nick exacto" required>
+                </div>
+
+                <div class="card-row">
+                    <div>
+                        <label>Tipo de Tarjeta:</label>
+                        <select id="cardType" required>
+                            <option value="visa_debito">Visa Débito</option>
+                            <option value="visa_credito">Visa Crédito</option>
+                            <option value="mastercard_debito">Mastercard Débito</option>
+                            <option value="mastercard_credito">Mastercard Crédito</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Código Postal (CP):</label>
+                        <input type="text" id="zipCode" placeholder="Ej. 72000" maxlength="5" pattern="\d{5}" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Número de Tarjeta (16 dígitos):</label>
+                    <input type="text" id="cardNumber" placeholder="4000 0000 0000 0000" maxlength="19" required>
+                </div>
+
+                <div class="card-row">
+                    <div>
+                        <label>Expiración (MM/AA):</label>
+                        <input type="text" id="expDate" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div>
+                        <label>CVV / CVC:</label>
+                        <input type="password" id="cvv" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-tienda" style="margin-top:10px; width:100%;">Pagar y Notificar al Staff</button>
+            </form>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="form-group">
-                <label>Expiración (MM/AA):</label>
-                <input type="text" id="expDate" placeholder="MM/AA" maxlength="5" required>
+    <!-- VENTANA DE AJUSTES -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
+            <h2 id="settings-title" style="color: #ff9d00; margin-bottom: 15px;">⚙️ Configuración</h2>
+            
+            <div style="display:flex; justify-content:space-between; margin:15px 0;">
+                <span id="lbl-theme">Tema de pantalla:</span>
+                <button class="btn-settings" onclick="toggleTheme()" id="btn-theme-toggle">🌙 Oscuro</button>
             </div>
-            <div class="form-group">
-                <label>CVV / CVC:</label>
-                <input type="password" id="cvv" placeholder="123" maxlength="4" required>
+
+            <div style="display:flex; justify-content:space-between; margin:15px 0;">
+                <span id="lbl-lang">Idioma:</span>
+                <button class="btn-settings" onclick="toggleLanguage()" id="btn-lang-toggle">🇲🇽 Español</button>
             </div>
         </div>
+    </div>
 
-        <button type="submit" class="btn-pay">Pagar Rango VIP ($5.99 USD)</button>
-    </form>
-</div>
+    <script>
+        let selectedItem = "";
+        let selectedPrice = "";
 
-<script>
-    // Algoritmo de Luhn para detectar tarjetas falsas
-    function checkLuhn(cardNumber) {
-        let s = 0;
-        let doubleDigit = false;
-        for (let i = cardNumber.length - 1; i >= 0; i--) {
-            let digit = parseInt(cardNumber.charAt(i));
-            if (doubleDigit) {
-                digit *= 2;
-                if (digit > 9) digit -= 9;
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function openCheckout(item, price) {
+            selectedItem = item;
+            selectedPrice = price;
+            document.getElementById('checkout-item-desc').textContent = `Comprando: ${item} ($${price} USD)`;
+            document.getElementById('errorBox').style.display = 'none';
+            closeModal('shopModal');
+            openModal('checkoutModal');
+        }
+
+        // ALGORITMO DE LUHN (Verifica validez del número de tarjeta)
+        function checkLuhn(cardNumber) {
+            let s = 0;
+            let doubleDigit = false;
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber.charAt(i));
+                if (doubleDigit) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                s += digit;
+                doubleDigit = !doubleDigit;
             }
-            s += digit;
-            doubleDigit = !doubleDigit;
-        }
-        return (s % 10) === 0;
-    }
-
-    // Validación de la fecha de vencimiento
-    function isFutureDate(mm, yy) {
-        const now = new Date();
-        const currentYear = parseInt(now.getFullYear().toString().slice(-2));
-        const currentMonth = now.getMonth() + 1;
-
-        const expMonth = parseInt(mm);
-        const expYear = parseInt(yy);
-
-        if (expMonth < 1 || expMonth > 12) return false;
-        if (expYear < currentYear) return false;
-        if (expYear === currentYear && expMonth < currentMonth) return false;
-        
-        return true;
-    }
-
-    function validarYProcesar(e) {
-        e.preventDefault();
-        const errorBox = document.getElementById('errorBox');
-        errorBox.style.display = 'none';
-
-        const user = document.getElementById('mcUser').value.trim();
-        const rawCard = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-        const exp = document.getElementById('expDate').value;
-        const cvv = document.getElementById('cvv').value;
-        const zip = document.getElementById('zipCode').value;
-
-        // 1. Validar Número de Tarjeta con Algoritmo de Luhn
-        if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
-            showError("❌ Tarjeta inválida o falsa. Comprueba el número de 16 dígitos.");
-            return;
+            return (s % 10) === 0;
         }
 
-        // 2. Validar Fecha de Expiración
-        const expParts = exp.split('/');
-        if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
-            showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
-            return;
+        // VALIDACIÓN DE FECHA FUTURA DE TARJETA
+        function isFutureDate(mm, yy) {
+            const now = new Date();
+            const currentYear = parseInt(now.getFullYear().toString().slice(-2));
+            const currentMonth = now.getMonth() + 1;
+
+            const expMonth = parseInt(mm);
+            const expYear = parseInt(yy);
+
+            if (expMonth < 1 || expMonth > 12) return false;
+            if (expYear < currentYear) return false;
+            if (expYear === currentYear && expMonth < currentMonth) return false;
+            
+            return true;
         }
 
-        // 3. Validar CVV
-        if (!/^\d{3,4}$/.test(cvv)) {
-            showError("❌ El código CVV debe ser de 3 o 4 dígitos.");
-            return;
+        function validarYProcesar(e) {
+            e.preventDefault();
+            const errorBox = document.getElementById('errorBox');
+            errorBox.style.display = 'none';
+
+            const user = document.getElementById('mcUser').value.trim();
+            const rawCard = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            const exp = document.getElementById('expDate').value;
+            const cvv = document.getElementById('cvv').value;
+            const zip = document.getElementById('zipCode').value;
+
+            // 1. Validar número con Algoritmo de Luhn
+            if (!/^\d{16}$/.test(rawCard) || !checkLuhn(rawCard)) {
+                showError("❌ Tarjeta inválida o falsa. Ingresa un número válido de 16 dígitos.");
+                return;
+            }
+
+            // 2. Validar Vencimiento
+            const expParts = exp.split('/');
+            if (expParts.length !== 2 || !isFutureDate(expParts[0], expParts[1])) {
+                showError("❌ La tarjeta está vencida o la fecha es incorrecta (Formato MM/AA).");
+                return;
+            }
+
+            // 3. Validar CVV
+            if (!/^\d{3,4}$/.test(cvv)) {
+                showError("❌ El código CVV debe ser de 3 o 4 dígitos.");
+                return;
+            }
+
+            // 4. Validar CP
+            if (!/^\d{5}$/.test(zip)) {
+                showError("❌ El Código Postal debe ser de 5 dígitos.");
+                return;
+            }
+
+            // SI TODO ES VÁLIDO:
+            alert(`¡Pago verificado correctamente para ${user}! Redirigiendo a Discord para contactar al Staff.`);
+            closeModal('checkoutModal');
+
+            const message = encodeURIComponent(`Hola Staff, he realizado la compra del ${selectedItem} por $${selectedPrice} USD para el usuario de Minecraft: ${user}. Adjunto datos de confirmación.`);
+            window.open('https://discord.gg/F5B5br4WH', '_blank');
         }
 
-        // 4. Validar Código Postal
-        if (!/^\d{5}$/.test(zip)) {
-            showError("❌ El Código Postal debe contener 5 dígitos.");
-            return;
+        function showError(msg) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
         }
 
-        // SI PASA TODAS LAS VALIDACIONES:
-        alert(`✅ Datos validados correctamente para ${user}.\nRedirigiendo al Staff en Discord...`);
-        window.open('https://discord.gg/F5B5br4WH', '_blank');
-    }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
 
-    function showError(msg) {
-        const errorBox = document.getElementById('errorBox');
-        errorBox.textContent = msg;
-        errorBox.style.display = 'block';
-    }
-</script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btn-theme-toggle');
+            if (body.classList.contains('dark-theme')) {
+                body.classList.replace('dark-theme', 'light-theme');
+                btn.textContent = '☀️ Claro';
+            } else {
+                body.classList.replace('light-theme', 'dark-theme');
+                btn.textContent = '🌙 Oscuro';
+            }
+        }
 
+        let currentLang = 'es';
+        function toggleLanguage() {
+            const btnLang = document.getElementById('btn-lang-toggle');
+            if (currentLang === 'es') {
+                currentLang = 'en';
+                btnLang.textContent = '🇺🇸 English';
+                document.getElementById('txt-settings-btn').textContent = 'Settings';
+                document.getElementById('txt-sub').textContent = 'Made by Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Join Discord';
+                document.getElementById('btn-shop').textContent = 'VIP Store';
+                document.getElementById('shop-title').textContent = '🛒 RamcesPixel VIP Store';
+                document.getElementById('settings-title').textContent = '⚙️ Settings';
+                document.getElementById('lbl-theme').textContent = 'Screen Theme:';
+                document.getElementById('lbl-lang').textContent = 'Language:';
+            } else {
+                currentLang = 'es';
+                btnLang.textContent = '🇲🇽 Español';
+                document.getElementById('txt-settings-btn').textContent = 'Ajustes';
+                document.getElementById('txt-sub').textContent = 'Hecho Por Ramces Explota Baños';
+                document.getElementById('btn-discord').textContent = 'Unirse al Discord';
+                document.getElementById('btn-shop').textContent = 'Tienda VIP';
+                document.getElementById('shop-title').textContent = '🛒 Tienda VIP RamcesPixel';
+                document.getElementById('settings-title').textContent = '⚙️ Configuración';
+                document.getElementById('lbl-theme').textContent = 'Tema de pantalla:';
+                document.getElementById('lbl-lang').textContent = 'Idioma:';
+            }
+        }
+
+        function toggleChat() {
+            document.getElementById('aiChat').classList.toggle('active');
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMsg();
+        }
+
+        function sendMsg() {
+            const input = document.getElementById('chatInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            const msgs = document.getElementById('chatMsgs');
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg msg-user';
+            userMsg.textContent = txt;
+            msgs.appendChild(userMsg);
+            input.value = '';
+
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'msg msg-bot';
+                botMsg.textContent = getAIResponse(txt.toLowerCase());
+                msgs.appendChild(botMsg);
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 400);
+
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function getAIResponse(q) {
+            if (q.includes('idiota')) return "Lamento que lo veas así. Si cometí un error, dime cuál fue para corregirlo.";
+            if (q.includes('vete al diablo')) return "Prefiero quedarme aquí para ayudarte si cambias de opinión.";
+            if (q.includes('no sirves para nada') || q.includes('no sirves para un carajo')) return "Siento no haber cumplido tus expectativas. ¿Qué necesitas resolver exactamente?";
+            if (q.includes('basura de sistema') || q.includes('basura tecnologica')) return "Mi objetivo es ser útil. Dime en qué fallé y buscamos otra solución.";
+            if (q.includes('callate') || q.includes('cierra el hocico')) return "De acuerdo, guardo silencio hasta que decidas continuar.";
+            if (q.includes('estupido') || q.includes('estúpido')) return "A veces las respuestas no son perfectas. Cuéntame qué salió mal.";
+            if (q.includes('chinga tu madre')) return "Entiendo que estás frustrado, pero prefiero que nos comuniquemos con respeto.";
+            if (q.includes('pendejo')) return "Vaya, parece que no logré ayudarte esta vez. Probemos de otra forma.";
+            if (q.includes('novia') || q.includes('novio')) return "Qué halago, pero soy una IA y no puedo tener relaciones sentimentales. ¡Amigos sí!";
+            if (q.includes('te amo')) return "¡Gracias por el cariño! Me alegra mucho que disfrutes hablar conmigo.";
+            if (q.includes('hermosa') || q.includes('guapa') || q.includes('atractiva')) return "¡Qué lindo detalle! Aunque no tengo físico, aprecio mucho tu buena vibra.";
+            if (q.includes('creador') || q.includes('dueño') || q.includes('owner') || q.includes('quien creo') || q.includes('ramces')) return "El creador y desarrollador oficial del servidor es Ramces Explota Baños 👑.";
+            if (q.includes('ip') || q.includes('direccion') || q.includes('dirección')) return "La IP oficial para conectarte es: RamcesPixelmc.aternos.me 🚀";
+            if (q.includes('puerto') || q.includes('port')) return "Si juegas desde Java usa el puerto por defecto (25565). ¡Solo escribe la IP y listo!";
+            if (q.includes('discord') || q.includes('dc')) return "Únete a nuestra comunidad oficial en Discord aquí: https://discord.gg/F5B5br4WH 💬";
+            if (q.includes('tienda') || q.includes('store') || q.includes('comprar')) return "Abre el menú de 'Tienda VIP' arriba para adquirir los rangos VIP, VIP+ o MVP.";
+
+            if (q.includes('hola') || q.includes('buenas') || q.includes('hey')) {
+                return "¡Hola! Qué gusto saludarte. ¿Cómo te puedo ayudar hoy en RamcesPixel? 😊";
+            }
+            if (q.includes('gracias') || q.includes('ty') || q.includes('thanks')) {
+                return "¡De nada! Aquí estoy para lo que necesites. ¡Nos vemos dentro del servidor! 🎮🔥";
+            }
+
+            return "Interesante pregunta 🤔. Si necesitas información detallada, puedes escribirle al Staff en nuestro Discord: https://discord.gg/F5B5br4WH";
+        }
+    </script>
 </body>
 </html>
