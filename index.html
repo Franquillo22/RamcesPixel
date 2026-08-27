@@ -96,7 +96,7 @@
             gap: 10px;
         }
 
-        .btn-settings {
+        .btn-settings, .btn-login-bar {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
@@ -109,7 +109,7 @@
             gap: 5px;
         }
 
-        body.light-theme .btn-settings {
+        body.light-theme .btn-settings, body.light-theme .btn-login-bar {
             background: rgba(255, 255, 255, 0.8);
             color: #333;
             border: 1px solid #ccc;
@@ -239,6 +239,17 @@
             box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
         }
 
+        .btn-google {
+            background: #ffffff;
+            color: #333333;
+            border: 1px solid #ccc;
+        }
+
+        .btn-google:hover {
+            background: #f1f1f1;
+            transform: translateY(-3px);
+        }
+
         .btn-tienda {
             background: linear-gradient(135deg, #ff9d00, #e67e00);
             color: #ffffff;
@@ -257,11 +268,6 @@
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-        }
-
-        .btn-buy-item:hover {
-            background: #00a2ff;
-            color: #fff;
         }
 
         .modal {
@@ -319,6 +325,13 @@
             justify-content: space-between;
             align-items: center;
             text-align: left;
+        }
+
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .card-form {
@@ -382,10 +395,6 @@
             justify-content: center;
             transition: transform 0.3s ease;
             z-index: 99;
-        }
-
-        .ai-fab:hover {
-            transform: scale(1.1);
         }
 
         .chat-window {
@@ -543,6 +552,7 @@
     </div>
 
     <div class="top-bar">
+        <button class="btn-login-bar" onclick="openModal('authModal')" id="userBarBtn">👤 Iniciar Sesión</button>
         <button class="btn-settings" onclick="openModal('settingsModal')">⚙️ <span id="txt-settings-btn">Ajustes</span></button>
     </div>
 
@@ -584,6 +594,29 @@
         </div>
         <div class="ai-disclaimer">
             RamcesAI puede cometer errores. Verifica la información importante.
+        </div>
+    </div>
+
+    <!-- MODAL INICIO DE SESIÓN -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
+            <h2 style="color: #ff9d00; margin-bottom: 10px;">🔐 Iniciar Sesión</h2>
+            <p style="font-size: 0.9rem;">Elige una opción para identificarte:</p>
+
+            <div class="auth-buttons" id="authStep1">
+                <button class="btn btn-discord" onclick="loginWithDiscord()">🎮 Continuar con Discord</button>
+                <button class="btn btn-google" onclick="loginWithGoogle()">🌐 Continuar con Google</button>
+            </div>
+
+            <!-- PASO 2: VINCULAR NICK DE MINECRAFT -->
+            <div id="authStep2" style="display: none; margin-top: 15px;">
+                <p style="color: #00d4ff; margin-bottom: 10px;">¡Cuenta autenticada! Ahora ingresa tu usuario exacto de Minecraft:</p>
+                <form onsubmit="saveMinecraftNick(event)">
+                    <input type="text" id="mcNickInput" placeholder="Ej. Steve_123" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ff9d00; background: rgba(0,0,0,0.3); color: inherit; margin-bottom: 10px;">
+                    <button type="submit" class="btn btn-tienda" style="width: 100%;">Vincular Usuario</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -693,8 +726,45 @@
     </div>
 
     <script>
-        // API KEY DE TU CUENTA
         const API_KEY = "AQ.Ab8RN6I7futD3g-Wxmoj_qBQLbXenFFSmAAKFS02Ox-SsDkW5g";
+
+        let currentAuthMethod = null;
+        let minecraftNick = localStorage.getItem('mc_nick') || null;
+
+        // Comprobar sesión al cargar la página
+        window.addEventListener('load', () => {
+            if (minecraftNick) {
+                document.getElementById('userBarBtn').textContent = `🎮 ${minecraftNick}`;
+                document.getElementById('mcUser').value = minecraftNick;
+            }
+        });
+
+        function loginWithDiscord() {
+            // Ejemplo de simulación de respuesta OAuth2 de Discord
+            currentAuthMethod = 'Discord';
+            document.getElementById('authStep1').style.display = 'none';
+            document.getElementById('authStep2').style.display = 'block';
+        }
+
+        function loginWithGoogle() {
+            // Ejemplo de simulación de inicio con Google
+            currentAuthMethod = 'Google';
+            document.getElementById('authStep1').style.display = 'none';
+            document.getElementById('authStep2').style.display = 'block';
+        }
+
+        function saveMinecraftNick(e) {
+            e.preventDefault();
+            const nick = document.getElementById('mcNickInput').value.trim();
+            if (nick) {
+                minecraftNick = nick;
+                localStorage.setItem('mc_nick', nick);
+                document.getElementById('userBarBtn').textContent = `🎮 ${nick}`;
+                document.getElementById('mcUser').value = nick;
+                closeModal('authModal');
+                alert(`¡Sesión iniciada como ${nick} usando ${currentAuthMethod}!`);
+            }
+        }
 
         const audio = document.getElementById('bgMusic');
         const playBtn = document.getElementById('musicPlayBtn');
@@ -838,7 +908,6 @@
             }
         }
 
-        // --- CONEXIÓN DE IA CON GEMINI (ACTUALIZADO A 3.6-FLASH) ---
         function toggleChat() {
             document.getElementById('aiChat').classList.toggle('active');
         }
@@ -855,7 +924,6 @@
             const msgs = document.getElementById('chatMsgs');
             const selectedModel = document.getElementById('aiModel').value;
             
-            // Mensaje usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg msg-user';
             userMsg.textContent = txt;
@@ -863,7 +931,6 @@
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
-            // Animación Pensando...
             const thinkingMsg = document.createElement('div');
             thinkingMsg.className = 'msg msg-bot thinking-msg';
             thinkingMsg.id = 'tempThinking';
@@ -910,7 +977,10 @@
                             { text: `${sistemaPrompt}\n\nEntrada del usuario: ${promptUsuario}` }
                         ]
                     }
-                ]
+                ],
+                generationConfig: {
+                    maxOutputTokens: 150
+                }
             };
 
             const response = await fetch(url, {
